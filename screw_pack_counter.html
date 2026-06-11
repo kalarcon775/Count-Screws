@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Screw Pack Counter</title>
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111;
+      background: #f5f5f5;
+    }
+
+    body {
+      margin: 0;
+      padding: 18px;
+      background: #f5f5f5;
+    }
+
+    .app {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+    }
+
+    .top {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .cameraBox {
+      position: relative;
+      background: #111;
+      border-radius: 18px;
+      overflow: hidden;
+      min-height: 420px;
+    }
+
+    video, canvas {
+      width: 100%;
+      display: block;
+    }
+
+    video {
+      transform: scaleX(1);
+      background: #111;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .result {
+      position: absolute;
+      left: 14px;
+      top: 14px;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      font-size: 20px;
+      border-radius: 10px;
+      border: 1px solid #bbb;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .value {
+      font-weight: 700;
+    }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 22px;
+      font-weight: 800;
+      color: white;
+      background: #0a66ff;
+      margin-top: 14px;
+    }
+
+    button.secondary {
+      background: #333;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 28px;
+      font-weight: 900;
+      text-align: center;
+      padding: 16px;
+      border-radius: 14px;
+      background: #eee;
+    }
+
+    .pass {
+      color: #067a20;
+      background: #d9f7df;
+    }
+
+    .fail {
+      color: #b00020;
+      background: #ffd9df;
+    }
+
+    .note {
+      color: #444;
+      font-size: 16px;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    .debug {
+      display: none;
+      margin-top: 14px;
+      width: 100%;
+      border-radius: 14px;
+      background: #111;
+    }
+
+    @media (min-width: 900px) {
+      .top {
+        grid-template-columns: 1.45fr 0.85fr;
+        align-items: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>Screw Pack Counter</h1>
+
+    <section class="top">
+      <div class="cameraBox">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div class="result">
+          Target: <span id="targetReadout">100</span><br />
+          Count: <span id="countReadout">0</span><br />
+          Difference: <span id="differenceReadout">0</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="grid">
+          <div>
+            <label for="target">Target Count</label>
+            <input id="target" type="number" value="100" min="1" max="500" />
+          </div>
+
+          <div>
+            <label for="minArea">Min Size</label>
+            <input id="minArea" type="number" value="75" min="1" max="10000" />
+          </div>
+        </div>
+
+        <div style="margin-top: 12px;">
+          <label for="threshold">
+            Brightness Threshold:
+            <span class="value" id="thresholdValue">145</span>
+          </label>
+          <input id="threshold" type="range" value="145" min="40" max="240" step="1" />
+        </div>
+
+        <div style="margin-top: 12px;">
+          <label for="maxArea">
+            Max Size:
+            <span class="value" id="maxAreaValue">5000</span>
+          </label>
+          <input id="maxArea" type="range" value="5000" min="100" max="30000" step="100" />
+        </div>
+
+        <button id="scanButton">Scan Screws</button>
+        <button id="cameraButton" class="secondary">Start Camera</button>
+
+        <div id="status" class="status">Ready</div>
+
+        <p class="note">
+          Use a dark matte background. Spread the screws so they are not touching.
+          Raise the brightness threshold if the mat is being counted.
+          Raise minimum size if tiny reflections are being counted.
+        </p>
+      </div>
+    </section>
+
+    <canvas id="workCanvas" class="debug"></canvas>
+  </main>
+
+  <script>
+    const video = document.getElementById("video");
+    const overlay = document.getElementById("overlay");
+    const overlayCtx = overlay.getContext("2d");
+    const workCanvas = document.getElementById("workCanvas");
+    const workCtx = workCanvas.getContext("2d", { willReadFrequently: true });
+
+    const targetInput = document.getElementById("target");
+    const minAreaInput = document.getElementById("minArea");
+    const thresholdInput = document.getElementById("threshold");
+    const maxAreaInput = document.getElementById("maxArea");
+
+    const targetReadout = document.getElementById("targetReadout");
+    const countReadout = document.getElementById("countReadout");
+    const differenceReadout = document.getElementById("differenceReadout");
+    const thresholdValue = document.getElementById("thresholdValue");
+    const maxAreaValue = document.getElementById("maxAreaValue");
+    const statusBox = document.getElementById("status");
+
+    thresholdInput.addEventListener("input", () => {
+      thresholdValue.textContent = thresholdInput.value;
+    });
+
+    maxAreaInput.addEventListener("input", () => {
+      maxAreaValue.textContent = maxAreaInput.value;
+    });
+
+    document.getElementById("cameraButton").addEventListener("click", startCamera);
+    document.getElementById("scanButton").addEventListener("click", scan);
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: "environment" },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
+        });
+
+        video.srcObject = stream;
+        statusBox.textContent = "Camera ready";
+        statusBox.className = "status";
+      } catch (error) {
+        statusBox.textContent = "Camera blocked or unavailable";
+        statusBox.className = "status fail";
+        console.error(error);
+      }
+    }
+
+    function scan() {
+      if (!video.videoWidth || !video.videoHeight) {
+        statusBox.textContent = "Start the camera first";
+        statusBox.className = "status fail";
+        return;
+      }
+
+      const sourceWidth = video.videoWidth;
+      const sourceHeight = video.videoHeight;
+
+      const maxWidth = 900;
+      const scale = Math.min(1, maxWidth / sourceWidth);
+      const width = Math.round(sourceWidth * scale);
+      const height = Math.round(sourceHeight * scale);
+
+      workCanvas.width = width;
+      workCanvas.height = height;
+      overlay.width = video.clientWidth;
+      overlay.height = video.clientHeight;
+
+      workCtx.drawImage(video, 0, 0, width, height);
+      const image = workCtx.getImageData(0, 0, width, height);
+      const pixels = image.data;
+
+      const threshold = Number(thresholdInput.value);
+      const minArea = Number(minAreaInput.value);
+      const maxArea = Number(maxAreaInput.value);
+
+      const binary = new Uint8Array(width * height);
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const i = (y * width + x) * 4;
+          const r = pixels[i];
+          const g = pixels[i + 1];
+          const b = pixels[i + 2];
+          const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+
+          if (luminance >= threshold) {
+            binary[y * width + x] = 1;
+          }
+        }
+      }
+
+      const components = findComponents(binary, width, height, minArea, maxArea);
+      const count = components.length;
+      const target = Number(targetInput.value);
+      const difference = count - target;
+
+      targetReadout.textContent = String(target);
+      countReadout.textContent = String(count);
+      differenceReadout.textContent = String(difference);
+
+      if (difference === 0) {
+        statusBox.textContent = "PASS: Exactly " + target + " detected";
+        statusBox.className = "status pass";
+      } else if (difference < 0) {
+        statusBox.textContent = "MISSING " + Math.abs(difference) + " screws";
+        statusBox.className = "status fail";
+      } else {
+        statusBox.textContent = "REMOVE " + difference + " screws";
+        statusBox.className = "status fail";
+      }
+
+      drawBoxes(components, width, height);
+    }
+
+    function findComponents(binary, width, height, minArea, maxArea) {
+      const visited = new Uint8Array(width * height);
+      const components = [];
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const start = y * width + x;
+
+          if (!binary[start] || visited[start]) {
+            continue;
+          }
+
+          const stack = [start];
+          visited[start] = 1;
+
+          let area = 0;
+          let minX = x;
+          let maxX = x;
+          let minY = y;
+          let maxY = y;
+
+          while (stack.length) {
+            const index = stack.pop();
+            area++;
+
+            const cx = index % width;
+            const cy = Math.floor(index / width);
+
+            if (cx < minX) minX = cx;
+            if (cx > maxX) maxX = cx;
+            if (cy < minY) minY = cy;
+            if (cy > maxY) maxY = cy;
+
+            for (let dy = -1; dy <= 1; dy++) {
+              for (let dx = -1; dx <= 1; dx++) {
+                if (dx === 0 && dy === 0) continue;
+
+                const nx = cx + dx;
+                const ny = cy + dy;
+
+                if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
+                  continue;
+                }
+
+                const next = ny * width + nx;
+
+                if (binary[next] && !visited[next]) {
+                  visited[next] = 1;
+                  stack.push(next);
+                }
+              }
+            }
+          }
+
+          const boxWidth = maxX - minX + 1;
+          const boxHeight = maxY - minY + 1;
+          const aspect = Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
+
+          const isValid =
+            area >= minArea &&
+            area <= maxArea &&
+            boxWidth >= 3 &&
+            boxHeight >= 3 &&
+            aspect <= 12;
+
+          if (isValid) {
+            components.push({ area, minX, maxX, minY, maxY, boxWidth, boxHeight });
+          }
+        }
+      }
+
+      return components;
+    }
+
+    function drawBoxes(components, imageWidth, imageHeight) {
+      overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+
+      const scaleX = overlay.width / imageWidth;
+      const scaleY = overlay.height / imageHeight;
+
+      overlayCtx.lineWidth = 2;
+      overlayCtx.strokeStyle = "#00ff55";
+      overlayCtx.font = "16px system-ui";
+      overlayCtx.fillStyle = "#00ff55";
+
+      components.forEach((component, index) => {
+        const x = component.minX * scaleX;
+        const y = component.minY * scaleY;
+        const w = component.boxWidth * scaleX;
+        const h = component.boxHeight * scaleY;
+
+        overlayCtx.strokeRect(x, y, w, h);
+        overlayCtx.fillText(String(index + 1), x, Math.max(16, y - 4));
+      });
+    }
+
+    startCamera();
+  </script>
+</body>
+</html>

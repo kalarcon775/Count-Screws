@@ -3,77 +3,371 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Screw Pack Counter</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="LUX Counter" />
+  <title>LUX Fastener Pack Counter</title>
+
   <style>
     :root {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #111;
-      background: #f5f5f5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+      --lux-black: #231f20;
+      --lux-charcoal: #151515;
+      --lux-graphite: #343233;
+      --lux-gray: #707477;
+      --lux-silver: #e6e7e8;
+      --lux-light: #f7f8f8;
+      --lux-white: #ffffff;
+      --lux-green: #74b843;
+      --lux-green-dark: #4f8f2f;
+      --lux-red: #b00020;
+      --lux-amber: #a66a00;
+
+      --shadow: 0 24px 50px rgba(35, 31, 32, 0.2);
+      --tight-shadow: 0 10px 22px rgba(35, 31, 32, 0.16);
+      --panel-border: rgba(35, 31, 32, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      padding: 18px;
-      background: #f5f5f5;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0) 28%),
+        linear-gradient(135deg, #f3f4f4 0%, #d5d9db 42%, #b8bec2 100%);
+      color: var(--lux-black);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(90deg, rgba(35, 31, 32, 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(35, 31, 32, 0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
     }
 
     .app {
-      max-width: 980px;
+      max-width: 1240px;
       margin: 0 auto;
+      padding: 18px;
+      position: relative;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 16px;
+      background: var(--lux-black);
+      color: var(--lux-white);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      min-height: 154px;
+    }
+
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(125deg, transparent 0 58%, rgba(116, 184, 67, 0.95) 58% 64%, transparent 64%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 45%);
+      pointer-events: none;
+    }
+
+    .headerMain {
+      position: relative;
+      padding: 22px 26px 20px;
+      z-index: 1;
+    }
+
+    .brandLine {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .luxLogo {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 8px;
+      color: white;
+      letter-spacing: -0.055em;
+      line-height: 1;
+    }
+
+    .luxWord {
+      font-size: 38px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .dynWord {
+      font-size: 19px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: #dfe2e3;
+      transform: translateY(-1px);
+    }
+
+    .luxMark {
+      position: relative;
+      width: 42px;
+      height: 28px;
+      display: inline-block;
+      margin-left: 2px;
+      transform: translateY(4px);
+    }
+
+    .luxMark::before,
+    .luxMark::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+    }
+
+    .luxMark::before {
+      left: 0;
+      border-left: 24px solid var(--lux-green);
+    }
+
+    .luxMark::after {
+      left: 15px;
+      border-left: 24px solid var(--lux-green);
+      opacity: 0.65;
+      mix-blend-mode: normal;
+    }
+
+    .brandTag {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--lux-green);
+      padding-top: 8px;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: 34px;
+      margin: 0;
+      font-size: clamp(36px, 5vw, 66px);
+      line-height: 0.92;
+      letter-spacing: -0.07em;
+      font-weight: 950;
+      max-width: 720px;
+      text-transform: uppercase;
     }
 
-    .top {
+    .sub {
+      margin: 13px 0 0;
+      color: #d7dbdc;
+      font-size: 17px;
+      max-width: 650px;
+      line-height: 1.4;
+    }
+
+    .headerStats {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-rows: repeat(3, 1fr);
+      min-width: 210px;
+      border-left: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .statTile {
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .statTile:last-child {
+      border-bottom: 0;
+    }
+
+    .statLabel {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      color: #bfc5c7;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 4px;
+    }
+
+    .statValue {
+      display: block;
+      font-size: 24px;
+      font-weight: 950;
+      letter-spacing: -0.04em;
+    }
+
+    .productStrip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: -4px 0 16px;
+    }
+
+    .productStrip span {
+      background: rgba(35, 31, 32, 0.86);
+      color: white;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-left: 3px solid var(--lux-green);
+      box-shadow: 0 4px 10px rgba(35, 31, 32, 0.12);
+    }
+
+    .layout {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 16px;
     }
 
-    .cameraBox {
-      position: relative;
-      background: #111;
-      border-radius: 18px;
+    @media (min-width: 960px) {
+      .layout {
+        grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.9fr);
+      }
+    }
+
+    .cameraShell {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)),
+        var(--lux-charcoal);
       overflow: hidden;
-      min-height: 420px;
+      position: relative;
+      min-height: 468px;
+      box-shadow: var(--shadow);
+      border: 8px solid var(--lux-black);
+      outline: 1px solid rgba(255, 255, 255, 0.14);
     }
 
-    video, canvas {
-      width: 100%;
+    .cameraShell::before {
+      content: "ACTIVE SCAN FIELD";
+      position: absolute;
+      right: 12px;
+      top: 10px;
+      z-index: 3;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 11px;
+      font-weight: 950;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    #video {
+      display: none;
+    }
+
+    #displayCanvas {
       display: block;
-    }
-
-    video {
-      transform: scaleX(1);
+      width: 100%;
       background: #111;
+      min-height: 460px;
     }
 
     #overlay {
       position: absolute;
       inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
     }
 
-    .result {
+    .hud {
       position: absolute;
-      left: 14px;
-      top: 14px;
-      background: rgba(255, 255, 255, 0.92);
-      border-radius: 14px;
-      padding: 12px 14px;
-      font-size: 20px;
-      font-weight: 700;
-      line-height: 1.35;
+      left: 18px;
+      top: 18px;
+      background: rgba(247, 248, 248, 0.94);
+      padding: 15px 16px;
+      min-width: 236px;
+      box-shadow: var(--tight-shadow);
+      border-left: 8px solid var(--lux-amber);
+      color: var(--lux-black);
     }
 
-    .panel {
-      background: white;
-      border-radius: 18px;
-      padding: 16px;
-      box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+    .hud::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 12px;
+      height: 100%;
+      background: var(--lux-green);
+    }
+
+    .hud .big {
+      font-size: 54px;
+      font-weight: 950;
+      line-height: 0.92;
+      letter-spacing: -0.06em;
+    }
+
+    .hud .line {
+      font-size: 15px;
+      font-weight: 900;
+      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #3e4142;
+    }
+
+    .hud.pass {
+      border-left-color: var(--lux-green);
+    }
+
+    .hud.fail {
+      border-left-color: var(--lux-red);
+    }
+
+    .hud.warn {
+      border-left-color: var(--lux-amber);
+    }
+
+    .card {
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 247, 247, 0.92)),
+        var(--lux-white);
+      padding: 18px;
+      box-shadow: var(--tight-shadow);
+      border: 1px solid var(--panel-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--lux-green), var(--lux-black));
+    }
+
+    .sectionTitle {
+      margin: 4px 0 16px;
+      font-size: 13px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--lux-black);
     }
 
     .grid {
@@ -84,102 +378,309 @@
 
     label {
       display: block;
-      font-weight: 700;
-      margin-bottom: 6px;
+      font-weight: 900;
+      font-size: 11px;
+      margin-bottom: 7px;
+      color: #343233;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
     }
 
-    input[type="number"] {
+    input[type="number"],
+    input[type="text"],
+    select {
       width: 100%;
-      box-sizing: border-box;
+      padding: 13px 12px;
+      font-size: 19px;
+      border: 1px solid #c1c7c9;
+      border-radius: 0;
+      background: #ffffff;
+      color: var(--lux-black);
+      font-weight: 750;
+      outline: none;
+    }
+
+    input[type="number"]:focus,
+    input[type="text"]:focus,
+    select:focus {
+      border-color: var(--lux-green);
+      box-shadow: inset 0 -3px 0 var(--lux-green);
+    }
+
+    input[type="file"] {
+      width: 100%;
+      font-size: 15px;
       padding: 12px;
-      font-size: 20px;
-      border-radius: 10px;
-      border: 1px solid #bbb;
-    }
-
-    input[type="range"] {
-      width: 100%;
-    }
-
-    .value {
-      font-weight: 700;
+      border: 1px dashed #9ba2a5;
+      background: #f7f8f8;
     }
 
     button {
       width: 100%;
       border: 0;
-      border-radius: 14px;
+      border-radius: 0;
       padding: 16px;
-      font-size: 22px;
-      font-weight: 800;
+      font-size: 15px;
+      font-weight: 950;
       color: white;
-      background: #0a66ff;
-      margin-top: 14px;
+      background: var(--lux-black);
+      margin-top: 12px;
+      touch-action: manipulation;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      height: 100%;
+      width: 9px;
+      background: var(--lux-green);
     }
 
     button.secondary {
-      background: #333;
+      background: #4a4d4f;
+    }
+
+    button.good {
+      background: var(--lux-green-dark);
+    }
+
+    button.warnBtn {
+      background: #8b6500;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .smallButtonRow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
     }
 
     .status {
       margin-top: 14px;
-      font-size: 28px;
-      font-weight: 900;
+      font-size: 22px;
+      font-weight: 950;
       text-align: center;
-      padding: 16px;
-      border-radius: 14px;
-      background: #eee;
+      padding: 15px;
+      border-radius: 0;
+      background: #e7e9ea;
+      border-left: 8px solid #a8adb0;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
     }
 
-    .pass {
-      color: #067a20;
-      background: #d9f7df;
+    .passText {
+      color: #255b16;
+      background: #e5f2dc;
+      border-left-color: var(--lux-green);
     }
 
-    .fail {
-      color: #b00020;
-      background: #ffd9df;
+    .failText {
+      color: var(--lux-red);
+      background: #ffe0e5;
+      border-left-color: var(--lux-red);
+    }
+
+    .warnText {
+      color: #6b4a00;
+      background: #fff1cf;
+      border-left-color: var(--lux-amber);
+    }
+
+    .autoBox {
+      margin-top: 14px;
+      padding: 14px;
+      background: #eef0f1;
+      border-left: 5px solid var(--lux-green);
+    }
+
+    .autoBox strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--lux-black);
+      margin-bottom: 5px;
+    }
+
+    .autoBox span {
+      display: block;
+      font-size: 14px;
+      color: #4a4d4f;
+      line-height: 1.4;
     }
 
     .note {
-      color: #444;
-      font-size: 16px;
+      color: #4a4d4f;
+      font-size: 14px;
       line-height: 1.45;
-      margin-top: 12px;
+      margin: 13px 0 0;
     }
 
-    .debug {
-      display: none;
+    .warningList {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: #5c3b00;
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .history {
       margin-top: 14px;
-      width: 100%;
-      border-radius: 14px;
-      background: #111;
+      overflow: auto;
+      background: white;
+      border: 1px solid #d4d8da;
     }
 
-    @media (min-width: 900px) {
-      .top {
-        grid-template-columns: 1.45fr 0.85fr;
-        align-items: start;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      border-bottom: 1px solid #dde1e3;
+      padding: 8px 7px;
+      white-space: nowrap;
+    }
+
+    th {
+      font-size: 11px;
+      color: #4a4d4f;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      background: #eef0f1;
+    }
+
+    .hiddenControl,
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 720px) {
+      .app {
+        padding: 10px;
+      }
+
+      .header {
+        grid-template-columns: 1fr;
+      }
+
+      .headerStats {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: 1fr;
+        min-width: 0;
+        border-left: 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .statTile {
+        border-bottom: 0;
+        border-right: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 12px;
+      }
+
+      .statTile:last-child {
+        border-right: 0;
+      }
+
+      .statValue {
+        font-size: 18px;
+      }
+
+      .grid,
+      .smallButtonRow {
+        grid-template-columns: 1fr;
+      }
+
+      .hud {
+        min-width: 190px;
+      }
+
+      .hud .big {
+        font-size: 44px;
       }
     }
   </style>
 </head>
+
 <body>
   <main class="app">
-    <h1>Screw Pack Counter</h1>
+    <div class="header">
+      <div class="headerMain">
+        <div class="brandLine">
+          <div class="luxLogo">
+            <span class="luxWord">LUX</span>
+            <span class="dynWord">dynamics</span>
+            <span class="luxMark"></span>
+          </div>
+          <span class="brandTag">Manufacturing Vision Tool</span>
+        </div>
 
-    <section class="top">
-      <div class="cameraBox">
+        <h1>Fastener Pack Counter</h1>
+
+        <p class="sub">
+          iPad camera verification for 100-count screw packaging. Built for flat-mat scans, automatic detection, inspection records, and quick pass/fail checks.
+        </p>
+      </div>
+
+      <div class="headerStats">
+        <div class="statTile">
+          <span class="statLabel">Target</span>
+          <span class="statValue" id="targetStat">100</span>
+        </div>
+
+        <div class="statTile">
+          <span class="statLabel">Mode</span>
+          <span class="statValue" id="modePill">Camera</span>
+        </div>
+
+        <div class="statTile">
+          <span class="statLabel">Output</span>
+          <span class="statValue">PASS/FAIL</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="productStrip">
+      <span>IK10+</span>
+      <span>DATALINE</span>
+      <span>PK10+</span>
+      <span>LUXLINE</span>
+      <span>WAVE+</span>
+      <span>360+</span>
+      <span>GRO+</span>
+      <span>QS</span>
+    </div>
+
+    <section class="layout">
+      <div class="cameraShell">
         <video id="video" autoplay playsinline muted></video>
+        <canvas id="displayCanvas"></canvas>
         <canvas id="overlay"></canvas>
-        <div class="result">
-          Target: <span id="targetReadout">100</span><br />
-          Count: <span id="countReadout">0</span><br />
-          Difference: <span id="differenceReadout">0</span>
+
+        <div id="hud" class="hud warn">
+          <div class="big" id="countReadout">0</div>
+          <div class="line">Target: <span id="targetReadout">100</span></div>
+          <div class="line">Difference: <span id="differenceReadout">0</span></div>
+          <div class="line">Confidence: <span id="confidenceReadout">0%</span></div>
         </div>
       </div>
 
-      <div class="panel">
+      <div class="card">
+        <p class="sectionTitle">Scan Controls</p>
+
         <div class="grid">
           <div>
             <label for="target">Target Count</label>
@@ -187,75 +688,156 @@
           </div>
 
           <div>
-            <label for="minArea">Min Size</label>
-            <input id="minArea" type="number" value="75" min="1" max="10000" />
+            <label for="packageId">Package ID</label>
+            <input id="packageId" type="text" placeholder="Optional" />
           </div>
         </div>
 
-        <div style="margin-top: 12px;">
-          <label for="threshold">
-            Brightness Threshold:
-            <span class="value" id="thresholdValue">145</span>
-          </label>
+        <div class="autoBox">
+          <strong>Auto Detection Enabled</strong>
+          <span>The app automatically adjusts image brightness, screw size filtering, and scan sensitivity during each scan.</span>
+        </div>
+
+        <div class="hiddenControl">
           <input id="threshold" type="range" value="145" min="40" max="240" step="1" />
+          <input id="minArea" type="number" value="70" min="1" max="10000" />
+          <input id="maxArea" type="range" value="6500" min="100" max="40000" step="100" />
+          <input id="leftMargin" type="range" value="6" min="0" max="35" step="1" />
+          <input id="rightMargin" type="range" value="6" min="0" max="35" step="1" />
+          <input id="topMargin" type="range" value="6" min="0" max="35" step="1" />
+          <input id="bottomMargin" type="range" value="6" min="0" max="35" step="1" />
         </div>
 
-        <div style="margin-top: 12px;">
-          <label for="maxArea">
-            Max Size:
-            <span class="value" id="maxAreaValue">5000</span>
-          </label>
-          <input id="maxArea" type="range" value="5000" min="100" max="30000" step="100" />
+        <button id="cameraButton">Start Camera</button>
+        <button id="scanButton" class="good">Scan Screws</button>
+
+        <div class="smallButtonRow">
+          <button id="liveButton" class="secondary">Start Live Scan</button>
+          <button id="calibrateButton" class="warnBtn">Auto Calibrate</button>
         </div>
 
-        <button id="scanButton">Scan Screws</button>
-        <button id="cameraButton" class="secondary">Start Camera</button>
+        <div id="status" class="status warnText">Ready</div>
+        <ul id="warnings" class="warningList"></ul>
+      </div>
+    </section>
 
-        <div id="status" class="status">Ready</div>
+    <section class="layout" style="margin-top: 14px;">
+      <div class="card">
+        <p class="sectionTitle">Auto Scan Area</p>
+
+        <div class="autoBox">
+          <strong>Mat Boundary Mode</strong>
+          <span>The app scans the center area of the camera view and ignores the outer edge where hands, bags, labels, and table objects usually appear.</span>
+        </div>
 
         <p class="note">
-          Use a dark matte background. Spread the screws so they are not touching.
-          Raise the brightness threshold if the mat is being counted.
-          Raise minimum size if tiny reflections are being counted.
+          Keep the screws inside the green scan box. Use a matte dark mat and spread the screws into one layer before scanning.
+        </p>
+      </div>
+
+      <div class="card">
+        <p class="sectionTitle">Photo Test and Records</p>
+
+        <label for="photoInput">Test with a saved photo</label>
+        <input id="photoInput" type="file" accept="image/*" />
+
+        <div class="smallButtonRow">
+          <button id="saveButton" class="secondary">Save Result</button>
+          <button id="csvButton" class="secondary">Export CSV</button>
+        </div>
+
+        <div class="history">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Package</th>
+                <th>Target</th>
+                <th>Count</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </div>
+
+        <p class="note">
+          Use photo test mode to tune the setup before using the iPad camera. The best setup is a matte dark mat, overhead iPad, and diffused lighting.
         </p>
       </div>
     </section>
 
-    <canvas id="workCanvas" class="debug"></canvas>
+    <canvas id="workCanvas" class="hidden"></canvas>
   </main>
 
   <script>
     const video = document.getElementById("video");
+    const displayCanvas = document.getElementById("displayCanvas");
+    const displayCtx = displayCanvas.getContext("2d", { willReadFrequently: true });
+
     const overlay = document.getElementById("overlay");
     const overlayCtx = overlay.getContext("2d");
+
     const workCanvas = document.getElementById("workCanvas");
     const workCtx = workCanvas.getContext("2d", { willReadFrequently: true });
 
     const targetInput = document.getElementById("target");
-    const minAreaInput = document.getElementById("minArea");
+    const packageIdInput = document.getElementById("packageId");
+
     const thresholdInput = document.getElementById("threshold");
+    const minAreaInput = document.getElementById("minArea");
     const maxAreaInput = document.getElementById("maxArea");
 
-    const targetReadout = document.getElementById("targetReadout");
+    const leftMarginInput = document.getElementById("leftMargin");
+    const rightMarginInput = document.getElementById("rightMargin");
+    const topMarginInput = document.getElementById("topMargin");
+    const bottomMarginInput = document.getElementById("bottomMargin");
+
     const countReadout = document.getElementById("countReadout");
+    const targetReadout = document.getElementById("targetReadout");
+    const targetStat = document.getElementById("targetStat");
     const differenceReadout = document.getElementById("differenceReadout");
-    const thresholdValue = document.getElementById("thresholdValue");
-    const maxAreaValue = document.getElementById("maxAreaValue");
+    const confidenceReadout = document.getElementById("confidenceReadout");
+
     const statusBox = document.getElementById("status");
+    const hud = document.getElementById("hud");
+    const warningsEl = document.getElementById("warnings");
+    const historyBody = document.getElementById("historyBody");
+    const modePill = document.getElementById("modePill");
 
-    thresholdInput.addEventListener("input", () => {
-      thresholdValue.textContent = thresholdInput.value;
+    let liveTimer = null;
+    let latestResult = null;
+    let history = [];
+    let loadedImage = null;
+    let usingPhoto = false;
+    let calibratedAverageArea = Number(localStorage.getItem("averageScrewArea") || "0");
+
+    loadSettings();
+    updateLabels();
+    updateHistory();
+    initializeCanvas();
+
+    targetInput.addEventListener("input", () => {
+      updateLabels();
+      saveSettings();
     });
 
-    maxAreaInput.addEventListener("input", () => {
-      maxAreaValue.textContent = maxAreaInput.value;
-    });
+    packageIdInput.addEventListener("input", saveSettings);
 
     document.getElementById("cameraButton").addEventListener("click", startCamera);
     document.getElementById("scanButton").addEventListener("click", scan);
+    document.getElementById("liveButton").addEventListener("click", toggleLiveScan);
+    document.getElementById("calibrateButton").addEventListener("click", calibrateSize);
+    document.getElementById("saveButton").addEventListener("click", saveResult);
+    document.getElementById("csvButton").addEventListener("click", exportCSV);
+    document.getElementById("photoInput").addEventListener("change", loadPhoto);
 
     async function startCamera() {
       try {
+        usingPhoto = false;
+        loadedImage = null;
+        modePill.textContent = "Camera";
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
@@ -266,80 +848,335 @@
         });
 
         video.srcObject = stream;
+
+        await new Promise(resolve => {
+          video.onloadedmetadata = resolve;
+        });
+
+        video.play();
+        drawCameraFrame();
+
         statusBox.textContent = "Camera ready";
         statusBox.className = "status";
       } catch (error) {
         statusBox.textContent = "Camera blocked or unavailable";
-        statusBox.className = "status fail";
+        statusBox.className = "status failText";
         console.error(error);
       }
     }
 
-    function scan() {
+    function drawCameraFrame() {
       if (!video.videoWidth || !video.videoHeight) {
-        statusBox.textContent = "Start the camera first";
-        statusBox.className = "status fail";
         return;
       }
 
-      const sourceWidth = video.videoWidth;
-      const sourceHeight = video.videoHeight;
+      setCanvasSize(video.videoWidth, video.videoHeight);
+      displayCtx.drawImage(video, 0, 0, displayCanvas.width, displayCanvas.height);
+      drawOverlayOnly();
+    }
 
-      const maxWidth = 900;
+    function setCanvasSize(sourceWidth, sourceHeight) {
+      const maxWidth = 1200;
       const scale = Math.min(1, maxWidth / sourceWidth);
       const width = Math.round(sourceWidth * scale);
       const height = Math.round(sourceHeight * scale);
 
-      workCanvas.width = width;
-      workCanvas.height = height;
-      overlay.width = video.clientWidth;
-      overlay.height = video.clientHeight;
+      if (displayCanvas.width !== width || displayCanvas.height !== height) {
+        displayCanvas.width = width;
+        displayCanvas.height = height;
+        overlay.width = width;
+        overlay.height = height;
+      }
+    }
 
-      workCtx.drawImage(video, 0, 0, width, height);
-      const image = workCtx.getImageData(0, 0, width, height);
+    async function loadPhoto(event) {
+      const file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const bitmap = await createImageBitmap(file);
+
+      loadedImage = bitmap;
+      usingPhoto = true;
+      modePill.textContent = "Photo";
+
+      setCanvasSize(bitmap.width, bitmap.height);
+      displayCtx.drawImage(bitmap, 0, 0, displayCanvas.width, displayCanvas.height);
+      drawOverlayOnly();
+
+      statusBox.textContent = "Photo loaded. Press Scan Screws.";
+      statusBox.className = "status";
+    }
+
+    function scan() {
+      if (usingPhoto && loadedImage) {
+        displayCtx.drawImage(loadedImage, 0, 0, displayCanvas.width, displayCanvas.height);
+      } else {
+        if (!video.videoWidth || !video.videoHeight) {
+          statusBox.textContent = "Start the camera first";
+          statusBox.className = "status failText";
+          return;
+        }
+
+        drawCameraFrame();
+      }
+
+      const result = analyzeDisplayCanvas();
+
+      latestResult = result;
+
+      renderResult(result);
+      drawResultOverlay(result);
+    }
+
+    function toggleLiveScan() {
+      const button = document.getElementById("liveButton");
+
+      if (liveTimer) {
+        clearInterval(liveTimer);
+        liveTimer = null;
+        button.textContent = "Start Live Scan";
+        button.className = "secondary";
+        return;
+      }
+
+      if (usingPhoto) {
+        statusBox.textContent = "Live scan works with the camera, not photo mode";
+        statusBox.className = "status warnText";
+        return;
+      }
+
+      liveTimer = setInterval(scan, 900);
+      button.textContent = "Stop Live Scan";
+      button.className = "warnBtn";
+
+      scan();
+    }
+
+    function getROI(width, height) {
+      const left = Number(leftMarginInput.value) / 100;
+      const right = Number(rightMarginInput.value) / 100;
+      const top = Number(topMarginInput.value) / 100;
+      const bottom = Number(bottomMarginInput.value) / 100;
+
+      const x = Math.round(width * left);
+      const y = Math.round(height * top);
+      const w = Math.max(1, Math.round(width * (1 - left - right)));
+      const h = Math.max(1, Math.round(height * (1 - top - bottom)));
+
+      return { x, y, w, h };
+    }
+
+    function analyzeDisplayCanvas() {
+      const width = displayCanvas.width;
+      const height = displayCanvas.height;
+      const roi = getROI(width, height);
+
+      workCanvas.width = roi.w;
+      workCanvas.height = roi.h;
+
+      workCtx.drawImage(
+        displayCanvas,
+        roi.x, roi.y, roi.w, roi.h,
+        0, 0, roi.w, roi.h
+      );
+
+      const image = workCtx.getImageData(0, 0, roi.w, roi.h);
       const pixels = image.data;
+      const gray = new Uint8Array(roi.w * roi.h);
 
-      const threshold = Number(thresholdInput.value);
-      const minArea = Number(minAreaInput.value);
-      const maxArea = Number(maxAreaInput.value);
+      for (let i = 0, p = 0; i < pixels.length; i += 4, p++) {
+        const r = pixels[i];
+        const g = pixels[i + 1];
+        const b = pixels[i + 2];
 
-      const binary = new Uint8Array(width * height);
+        gray[p] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+      }
 
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const i = (y * width + x) * 4;
-          const r = pixels[i];
-          const g = pixels[i + 1];
-          const b = pixels[i + 2];
-          const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+      const autoThreshold = calculateAutoThreshold(gray);
+      const binary = new Uint8Array(roi.w * roi.h);
 
-          if (luminance >= threshold) {
-            binary[y * width + x] = 1;
+      for (let i = 0; i < gray.length; i++) {
+        if (gray[i] >= autoThreshold) {
+          binary[i] = 1;
+        }
+      }
+
+      const cleaned = removeNoise(binary, roi.w, roi.h);
+
+      const roughComponents = findComponents(
+        cleaned,
+        roi.w,
+        roi.h,
+        10,
+        60000
+      );
+
+      const autoSizes = calculateAutoSizes(roughComponents, roi.w, roi.h);
+
+      thresholdInput.value = String(autoThreshold);
+      minAreaInput.value = String(autoSizes.minArea);
+      maxAreaInput.value = String(autoSizes.maxArea);
+
+      const components = findComponents(
+        cleaned,
+        roi.w,
+        roi.h,
+        autoSizes.minArea,
+        autoSizes.maxArea
+      );
+
+      const final = estimateFinalCount(components, autoSizes.maxArea);
+      const target = Number(targetInput.value);
+      const difference = final.count - target;
+      const confidence = calculateConfidence(final, components, target);
+      const warnings = buildWarnings(final, components, confidence);
+
+      return {
+        target,
+        count: final.count,
+        rawObjects: components.length,
+        difference,
+        threshold: autoThreshold,
+        roi,
+        components,
+        clusterEstimates: final.clusterEstimates,
+        confidence,
+        warnings
+      };
+    }
+
+    function calculateAutoThreshold(gray) {
+      const otsu = otsuThreshold(gray);
+
+      let sum = 0;
+
+      for (const value of gray) {
+        sum += value;
+      }
+
+      const mean = sum / gray.length;
+
+      let variance = 0;
+
+      for (const value of gray) {
+        const d = value - mean;
+        variance += d * d;
+      }
+
+      const std = Math.sqrt(variance / gray.length);
+      const adaptive = Math.round(mean + std * 0.75);
+      const threshold = Math.max(otsu, adaptive);
+
+      return Math.max(55, Math.min(235, threshold));
+    }
+
+    function otsuThreshold(gray) {
+      const hist = new Array(256).fill(0);
+
+      for (const value of gray) {
+        hist[value]++;
+      }
+
+      const total = gray.length;
+      let sum = 0;
+
+      for (let i = 0; i < 256; i++) {
+        sum += i * hist[i];
+      }
+
+      let sumB = 0;
+      let wB = 0;
+      let maxBetween = -1;
+      let threshold = 145;
+
+      for (let t = 0; t < 256; t++) {
+        wB += hist[t];
+
+        if (wB === 0) {
+          continue;
+        }
+
+        const wF = total - wB;
+
+        if (wF === 0) {
+          break;
+        }
+
+        sumB += t * hist[t];
+
+        const mB = sumB / wB;
+        const mF = (sum - sumB) / wF;
+        const between = wB * wF * (mB - mF) * (mB - mF);
+
+        if (between > maxBetween) {
+          maxBetween = between;
+          threshold = t;
+        }
+      }
+
+      return threshold;
+    }
+
+    function calculateAutoSizes(components, width, height) {
+      const imageArea = width * height;
+
+      const usable = components
+        .filter(component => {
+          const notTinyNoise = component.area > imageArea * 0.00001;
+          const notHugeBackground = component.area < imageArea * 0.04;
+          const visibleShape = component.boxWidth >= 3 && component.boxHeight >= 3;
+
+          return notTinyNoise && notHugeBackground && visibleShape;
+        })
+        .map(component => component.area)
+        .sort((a, b) => a - b);
+
+      if (usable.length < 5) {
+        return {
+          minArea: Math.max(20, Math.round(imageArea * 0.00003)),
+          maxArea: Math.max(2500, Math.round(imageArea * 0.006))
+        };
+      }
+
+      const middleStart = Math.floor(usable.length * 0.2);
+      const middleEnd = Math.ceil(usable.length * 0.8);
+      const middle = usable.slice(middleStart, middleEnd);
+
+      const averageArea =
+        middle.reduce((sum, value) => sum + value, 0) / middle.length;
+
+      const minArea = Math.max(12, Math.round(averageArea * 0.22));
+      const maxArea = Math.max(200, Math.round(averageArea * 2.6));
+
+      return { minArea, maxArea };
+    }
+
+    function removeNoise(binary, width, height) {
+      const output = new Uint8Array(binary.length);
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const index = y * width + x;
+          let neighbors = 0;
+
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (binary[(y + dy) * width + (x + dx)]) {
+                neighbors++;
+              }
+            }
+          }
+
+          if (binary[index] && neighbors >= 3) {
+            output[index] = 1;
           }
         }
       }
 
-      const components = findComponents(binary, width, height, minArea, maxArea);
-      const count = components.length;
-      const target = Number(targetInput.value);
-      const difference = count - target;
-
-      targetReadout.textContent = String(target);
-      countReadout.textContent = String(count);
-      differenceReadout.textContent = String(difference);
-
-      if (difference === 0) {
-        statusBox.textContent = "PASS: Exactly " + target + " detected";
-        statusBox.className = "status pass";
-      } else if (difference < 0) {
-        statusBox.textContent = "MISSING " + Math.abs(difference) + " screws";
-        statusBox.className = "status fail";
-      } else {
-        statusBox.textContent = "REMOVE " + difference + " screws";
-        statusBox.className = "status fail";
-      }
-
-      drawBoxes(components, width, height);
+      return output;
     }
 
     function findComponents(binary, width, height, minArea, maxArea) {
@@ -355,6 +1192,7 @@
           }
 
           const stack = [start];
+
           visited[start] = 1;
 
           let area = 0;
@@ -365,6 +1203,7 @@
 
           while (stack.length) {
             const index = stack.pop();
+
             area++;
 
             const cx = index % width;
@@ -377,7 +1216,9 @@
 
             for (let dy = -1; dy <= 1; dy++) {
               for (let dx = -1; dx <= 1; dx++) {
-                if (dx === 0 && dy === 0) continue;
+                if (dx === 0 && dy === 0) {
+                  continue;
+                }
 
                 const nx = cx + dx;
                 const ny = cy + dy;
@@ -398,17 +1239,28 @@
 
           const boxWidth = maxX - minX + 1;
           const boxHeight = maxY - minY + 1;
-          const aspect = Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
 
-          const isValid =
+          const aspect =
+            Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
+
+          const valid =
             area >= minArea &&
-            area <= maxArea &&
+            area <= maxArea * 5 &&
             boxWidth >= 3 &&
             boxHeight >= 3 &&
-            aspect <= 12;
+            aspect <= 16;
 
-          if (isValid) {
-            components.push({ area, minX, maxX, minY, maxY, boxWidth, boxHeight });
+          if (valid) {
+            components.push({
+              area,
+              minX,
+              maxX,
+              minY,
+              maxY,
+              boxWidth,
+              boxHeight,
+              aspect
+            });
           }
         }
       }
@@ -416,29 +1268,354 @@
       return components;
     }
 
-    function drawBoxes(components, imageWidth, imageHeight) {
-      overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+    function estimateFinalCount(components, maxArea) {
+      const singleAreas = components
+        .filter(component => component.area <= maxArea)
+        .map(component => component.area)
+        .sort((a, b) => a - b);
 
-      const scaleX = overlay.width / imageWidth;
-      const scaleY = overlay.height / imageHeight;
+      let averageArea = calibratedAverageArea;
 
-      overlayCtx.lineWidth = 2;
-      overlayCtx.strokeStyle = "#00ff55";
-      overlayCtx.font = "16px system-ui";
-      overlayCtx.fillStyle = "#00ff55";
+      if (!averageArea && singleAreas.length >= 5) {
+        const start = Math.floor(singleAreas.length * 0.2);
+        const end = Math.ceil(singleAreas.length * 0.8);
+        const trimmed = singleAreas.slice(start, end);
 
-      components.forEach((component, index) => {
-        const x = component.minX * scaleX;
-        const y = component.minY * scaleY;
-        const w = component.boxWidth * scaleX;
-        const h = component.boxHeight * scaleY;
+        averageArea =
+          trimmed.reduce((sum, value) => sum + value, 0) / Math.max(1, trimmed.length);
+      }
 
-        overlayCtx.strokeRect(x, y, w, h);
-        overlayCtx.fillText(String(index + 1), x, Math.max(16, y - 4));
+      let count = 0;
+      const clusterEstimates = [];
+
+      for (const component of components) {
+        if (averageArea && component.area > maxArea) {
+          const estimated = Math.max(1, Math.round(component.area / averageArea));
+
+          count += estimated;
+          clusterEstimates.push({ component, estimated });
+        } else {
+          count += 1;
+        }
+      }
+
+      return { count, averageArea, clusterEstimates };
+    }
+
+    function calculateConfidence(final, components, target) {
+      let confidence = 98;
+
+      if (components.length === 0) {
+        return 0;
+      }
+
+      if (final.clusterEstimates.length > 0) {
+        confidence -= Math.min(35, final.clusterEstimates.length * 8);
+      }
+
+      const highAspect = components.filter(component => component.aspect > 10).length;
+      confidence -= Math.min(20, highAspect * 3);
+
+      if (Math.abs(final.count - target) > 5) {
+        confidence -= 5;
+      }
+
+      return Math.max(10, Math.min(99, Math.round(confidence)));
+    }
+
+    function buildWarnings(final, components, confidence) {
+      const warnings = [];
+
+      if (components.length === 0) {
+        warnings.push("No screws detected. Check camera, lighting, mat contrast, and scan area.");
+      }
+
+      if (final.clusterEstimates.length > 0) {
+        warnings.push("Some screws may be touching. The app estimated cluster counts.");
+      }
+
+      if (confidence < 80) {
+        warnings.push("Low confidence. Spread the screws more evenly and rescan.");
+      }
+
+      const target = Number(targetInput.value);
+
+      if (final.count < target) {
+        warnings.push("Count is below target.");
+      }
+
+      if (final.count > target) {
+        warnings.push("Count is above target.");
+      }
+
+      return warnings;
+    }
+
+    function renderResult(result) {
+      countReadout.textContent = String(result.count);
+      targetReadout.textContent = String(result.target);
+      targetStat.textContent = String(result.target);
+      differenceReadout.textContent = String(result.difference);
+      confidenceReadout.textContent = result.confidence + "%";
+
+      if (result.difference === 0 && result.confidence >= 80) {
+        statusBox.textContent = "PASS: Exactly " + result.target + " detected";
+        statusBox.className = "status passText";
+        hud.className = "hud pass";
+      } else if (result.difference === 0) {
+        statusBox.textContent = "Count matches, but rescan recommended";
+        statusBox.className = "status warnText";
+        hud.className = "hud warn";
+      } else if (result.difference < 0) {
+        statusBox.textContent = "Missing " + Math.abs(result.difference) + " screws";
+        statusBox.className = "status failText";
+        hud.className = "hud fail";
+      } else {
+        statusBox.textContent = "Remove " + result.difference + " screws";
+        statusBox.className = "status failText";
+        hud.className = "hud fail";
+      }
+
+      warningsEl.innerHTML = "";
+
+      result.warnings.forEach(warning => {
+        const li = document.createElement("li");
+
+        li.textContent = warning;
+        warningsEl.appendChild(li);
       });
     }
 
-    startCamera();
+    function drawOverlayOnly() {
+      if (!displayCanvas.width || !displayCanvas.height) {
+        return;
+      }
+
+      overlay.width = displayCanvas.width;
+      overlay.height = displayCanvas.height;
+
+      overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
+
+      const roi = getROI(displayCanvas.width, displayCanvas.height);
+
+      overlayCtx.lineWidth = 4;
+      overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.98)";
+      overlayCtx.strokeRect(roi.x, roi.y, roi.w, roi.h);
+
+      overlayCtx.fillStyle = "rgba(116, 184, 67, 0.98)";
+      overlayCtx.font = "22px system-ui";
+      overlayCtx.fillText("Scan Area", roi.x + 10, Math.max(28, roi.y - 10));
+    }
+
+    function drawResultOverlay(result) {
+      drawOverlayOnly();
+
+      overlayCtx.lineWidth = 2;
+      overlayCtx.font = "15px system-ui";
+      overlayCtx.textBaseline = "top";
+
+      let number = 1;
+
+      for (const component of result.components) {
+        const cluster = result.clusterEstimates.find(
+          item => item.component === component
+        );
+
+        const x = result.roi.x + component.minX;
+        const y = result.roi.y + component.minY;
+
+        overlayCtx.strokeStyle = cluster ? "#a66a00" : "#74b843";
+        overlayCtx.fillStyle = cluster ? "#a66a00" : "#74b843";
+
+        overlayCtx.strokeRect(x, y, component.boxWidth, component.boxHeight);
+
+        const label = cluster ? "+" + cluster.estimated : String(number);
+
+        overlayCtx.fillText(label, x, Math.max(0, y - 18));
+
+        number++;
+      }
+    }
+
+    function calibrateSize() {
+      if (!latestResult || latestResult.components.length < 5) {
+        statusBox.textContent = "Scan at least 5 separated screws before calibrating";
+        statusBox.className = "status warnText";
+        return;
+      }
+
+      const maxArea = Number(maxAreaInput.value);
+
+      const areas = latestResult.components
+        .filter(component => component.area <= maxArea)
+        .map(component => component.area)
+        .sort((a, b) => a - b);
+
+      if (areas.length < 5) {
+        statusBox.textContent = "Not enough single screws found for calibration";
+        statusBox.className = "status warnText";
+        return;
+      }
+
+      const start = Math.floor(areas.length * 0.2);
+      const end = Math.ceil(areas.length * 0.8);
+      const trimmed = areas.slice(start, end);
+
+      calibratedAverageArea =
+        trimmed.reduce((sum, value) => sum + value, 0) / trimmed.length;
+
+      localStorage.setItem("averageScrewArea", String(calibratedAverageArea));
+
+      statusBox.textContent = "Auto calibration saved";
+      statusBox.className = "status passText";
+    }
+
+    function saveResult() {
+      if (!latestResult) {
+        statusBox.textContent = "Scan before saving";
+        statusBox.className = "status warnText";
+        return;
+      }
+
+      const row = {
+        time: new Date().toLocaleString(),
+        packageId: packageIdInput.value.trim() || "Unlabeled",
+        target: latestResult.target,
+        count: latestResult.count,
+        result:
+          latestResult.difference === 0
+            ? "PASS"
+            : latestResult.difference < 0
+              ? "MISSING " + Math.abs(latestResult.difference)
+              : "REMOVE " + latestResult.difference,
+        confidence: latestResult.confidence
+      };
+
+      history.unshift(row);
+      history = history.slice(0, 50);
+
+      localStorage.setItem("scanHistory", JSON.stringify(history));
+
+      updateHistory();
+
+      statusBox.textContent = "Result saved";
+      statusBox.className = "status passText";
+    }
+
+    function updateHistory() {
+      try {
+        history = JSON.parse(localStorage.getItem("scanHistory") || "[]");
+      } catch {
+        history = [];
+      }
+
+      historyBody.innerHTML = "";
+
+      history.slice(0, 12).forEach(row => {
+        const tr = document.createElement("tr");
+
+        [row.time, row.packageId, row.target, row.count, row.result].forEach(value => {
+          const td = document.createElement("td");
+
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+
+        historyBody.appendChild(tr);
+      });
+    }
+
+    function exportCSV() {
+      if (!history.length) {
+        statusBox.textContent = "No saved results to export";
+        statusBox.className = "status warnText";
+        return;
+      }
+
+      const headers = ["Time", "Package ID", "Target", "Count", "Result", "Confidence"];
+      const lines = [headers.join(",")];
+
+      history.forEach(row => {
+        lines.push([
+          csvEscape(row.time),
+          csvEscape(row.packageId),
+          row.target,
+          row.count,
+          csvEscape(row.result),
+          row.confidence
+        ].join(","));
+      });
+
+      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = "screw-count-results.csv";
+      a.click();
+
+      URL.revokeObjectURL(url);
+    }
+
+    function csvEscape(value) {
+      const text = String(value);
+
+      if (text.includes(",") || text.includes('"') || text.includes("\n")) {
+        return '"' + text.replaceAll('"', '""') + '"';
+      }
+
+      return text;
+    }
+
+    function saveSettings() {
+      const settings = {
+        target: targetInput.value,
+        packageId: packageIdInput.value,
+        leftMargin: leftMarginInput.value,
+        rightMargin: rightMarginInput.value,
+        topMargin: topMarginInput.value,
+        bottomMargin: bottomMarginInput.value
+      };
+
+      localStorage.setItem("screwCounterSettings", JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+      try {
+        const settings = JSON.parse(localStorage.getItem("screwCounterSettings") || "{}");
+
+        if (settings.target) targetInput.value = settings.target;
+        if (settings.packageId) packageIdInput.value = settings.packageId;
+        if (settings.leftMargin) leftMarginInput.value = settings.leftMargin;
+        if (settings.rightMargin) rightMarginInput.value = settings.rightMargin;
+        if (settings.topMargin) topMarginInput.value = settings.topMargin;
+        if (settings.bottomMargin) bottomMarginInput.value = settings.bottomMargin;
+      } catch {}
+    }
+
+    function updateLabels() {
+      targetReadout.textContent = targetInput.value;
+      targetStat.textContent = targetInput.value;
+    }
+
+    function initializeCanvas() {
+      displayCanvas.width = 1280;
+      displayCanvas.height = 720;
+      overlay.width = 1280;
+      overlay.height = 720;
+
+      displayCtx.fillStyle = "#231f20";
+      displayCtx.fillRect(0, 0, displayCanvas.width, displayCanvas.height);
+
+      displayCtx.fillStyle = "#e6e7e8";
+      displayCtx.font = "42px system-ui";
+      displayCtx.fillText("LUX FASTENER VISION", 40, 86);
+
+      displayCtx.font = "22px system-ui";
+      displayCtx.fillText("Start the camera or load a test photo", 44, 126);
+
+      drawOverlayOnly();
+    }
   </script>
 </body>
 </html>

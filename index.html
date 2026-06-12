@@ -5,27 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="LUX Counter" />
-  <title>LUX Fastener Pack Counter</title>
+  <title>LUX Fastener Counter</title>
 
   <style>
     :root {
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-
       --lux-black: #231f20;
-      --lux-charcoal: #151515;
-      --lux-graphite: #343233;
-      --lux-gray: #707477;
-      --lux-silver: #e6e7e8;
-      --lux-light: #f7f8f8;
+      --lux-dark: #111111;
+      --lux-gray: #e6e7e8;
+      --lux-gray-2: #cfd3d5;
       --lux-white: #ffffff;
       --lux-green: #74b843;
       --lux-green-dark: #4f8f2f;
       --lux-red: #b00020;
-      --lux-amber: #a66a00;
+      --lux-yellow: #a66a00;
 
-      --shadow: 0 24px 50px rgba(35, 31, 32, 0.20);
-      --tight-shadow: 0 10px 22px rgba(35, 31, 32, 0.16);
-      --panel-border: rgba(35, 31, 32, 0.16);
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--lux-black);
+      background: var(--lux-gray);
     }
 
     * {
@@ -35,238 +31,138 @@
     body {
       margin: 0;
       min-height: 100vh;
-      background:
-        radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.95) 0, rgba(255, 255, 255, 0) 28%),
-        linear-gradient(135deg, #f3f4f4 0%, #d5d9db 42%, #b8bec2 100%);
-      color: var(--lux-black);
+      background: var(--lux-gray);
     }
 
     .app {
-      max-width: 1240px;
+      width: 100%;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 18px;
+      padding: 16px;
     }
 
     .header {
+      background: var(--lux-black);
+      color: var(--lux-white);
+      padding: 18px 22px;
+      border-left: 12px solid var(--lux-green);
       display: grid;
       grid-template-columns: 1fr auto;
       gap: 18px;
-      align-items: stretch;
-      margin-bottom: 16px;
-      background: var(--lux-black);
-      color: var(--lux-white);
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      min-height: 154px;
-    }
-
-    .header::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(125deg, transparent 0 58%, rgba(116, 184, 67, 0.95) 58% 64%, transparent 64%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 45%);
-      pointer-events: none;
-    }
-
-    .headerMain {
-      position: relative;
-      padding: 22px 26px 20px;
-      z-index: 1;
-    }
-
-    .brandLine {
-      display: flex;
       align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
     }
 
-    .luxLogo {
-      display: inline-flex;
+    .brand {
+      display: flex;
       align-items: baseline;
       gap: 8px;
-      color: white;
-      letter-spacing: -0.055em;
-      line-height: 1;
+      margin-bottom: 8px;
     }
 
-    .luxWord {
+    .brand .lux {
       font-size: 38px;
-      font-weight: 950;
-      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: -2px;
     }
 
-    .dynWord {
-      font-size: 19px;
-      font-weight: 650;
-      letter-spacing: -0.02em;
-      color: #dfe2e3;
-      transform: translateY(-1px);
+    .brand .dynamics {
+      font-size: 18px;
+      color: #d8d8d8;
+      font-weight: 600;
     }
 
-    .luxMark {
+    .brandMark {
+      width: 34px;
+      height: 22px;
       position: relative;
-      width: 42px;
-      height: 28px;
       display: inline-block;
-      margin-left: 2px;
       transform: translateY(4px);
     }
 
-    .luxMark::before,
-    .luxMark::after {
+    .brandMark::before,
+    .brandMark::after {
       content: "";
       position: absolute;
+      top: 0;
       width: 0;
       height: 0;
-      border-top: 14px solid transparent;
-      border-bottom: 14px solid transparent;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+      border-left: 21px solid var(--lux-green);
     }
 
-    .luxMark::before {
+    .brandMark::before {
       left: 0;
-      border-left: 24px solid var(--lux-green);
     }
 
-    .luxMark::after {
-      left: 15px;
-      border-left: 24px solid var(--lux-green);
-      opacity: 0.65;
-    }
-
-    .brandTag {
-      font-size: 12px;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--lux-green);
-      padding-top: 8px;
+    .brandMark::after {
+      left: 13px;
+      opacity: 0.6;
     }
 
     h1 {
       margin: 0;
-      font-size: clamp(36px, 5vw, 66px);
-      line-height: 0.92;
-      letter-spacing: -0.07em;
-      font-weight: 950;
-      max-width: 760px;
-      text-transform: uppercase;
-    }
-
-    .sub {
-      margin: 13px 0 0;
-      color: #d7dbdc;
-      font-size: 17px;
-      max-width: 670px;
-      line-height: 1.4;
-    }
-
-    .headerStats {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-rows: repeat(3, 1fr);
-      min-width: 210px;
-      border-left: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.045);
-    }
-
-    .statTile {
-      padding: 18px 22px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .statTile:last-child {
-      border-bottom: 0;
-    }
-
-    .statLabel {
-      display: block;
-      font-size: 11px;
+      font-size: clamp(34px, 5vw, 60px);
+      line-height: 0.95;
       font-weight: 900;
-      color: #bfc5c7;
+      letter-spacing: -3px;
       text-transform: uppercase;
-      letter-spacing: 0.14em;
-      margin-bottom: 4px;
     }
 
-    .statValue {
+    .headerStatus {
+      text-align: right;
+      min-width: 170px;
+    }
+
+    .headerStatus span {
       display: block;
-      font-size: 24px;
-      font-weight: 950;
-      letter-spacing: -0.04em;
-    }
-
-    .productStrip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: -4px 0 16px;
-    }
-
-    .productStrip span {
-      background: rgba(35, 31, 32, 0.86);
-      color: white;
-      padding: 8px 11px;
       font-size: 12px;
-      font-weight: 900;
+      color: #c8c8c8;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border-left: 3px solid var(--lux-green);
-      box-shadow: 0 4px 10px rgba(35, 31, 32, 0.12);
+      letter-spacing: 1.5px;
+      font-weight: 800;
     }
 
-    .layout {
+    .headerStatus strong {
+      display: block;
+      font-size: 32px;
+      color: var(--lux-green);
+      font-weight: 900;
+      line-height: 1;
+      margin-top: 6px;
+    }
+
+    .main {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
+      margin-top: 16px;
     }
 
-    @media (min-width: 960px) {
-      .layout {
-        grid-template-columns: minmax(0, 1.55fr) minmax(360px, 0.9fr);
+    @media (min-width: 900px) {
+      .main {
+        grid-template-columns: 1.55fr 0.75fr;
       }
     }
 
-    .cameraShell {
-      background: var(--lux-charcoal);
-      overflow: hidden;
+    .cameraPanel {
       position: relative;
-      min-height: 468px;
-      box-shadow: var(--shadow);
+      background: var(--lux-dark);
       border: 8px solid var(--lux-black);
-      outline: 1px solid rgba(255, 255, 255, 0.14);
+      min-height: 520px;
+      overflow: hidden;
     }
 
-    .cameraShell::before {
-      content: "ACTIVE SCAN FIELD";
-      position: absolute;
-      right: 12px;
-      top: 10px;
-      z-index: 3;
-      color: rgba(255, 255, 255, 0.62);
-      font-size: 11px;
-      font-weight: 950;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-
-    #video,
-    #photoCanvas {
-      display: block;
+    video {
       width: 100%;
-      background: #111;
+      height: 100%;
+      min-height: 520px;
+      display: block;
+      object-fit: cover;
+      background: var(--lux-dark);
     }
 
-    #photoCanvas {
-      display: none;
-    }
-
-    #overlay {
+    canvas#overlay {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -274,283 +170,149 @@
       pointer-events: none;
     }
 
-    .hud {
+    .resultHUD {
       position: absolute;
       left: 18px;
       top: 18px;
-      background: rgba(247, 248, 248, 0.94);
-      padding: 15px 16px;
-      min-width: 236px;
-      box-shadow: var(--tight-shadow);
-      border-left: 8px solid var(--lux-amber);
-      color: var(--lux-black);
+      background: rgba(255, 255, 255, 0.94);
+      border-left: 10px solid var(--lux-yellow);
+      padding: 16px;
+      min-width: 230px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
       z-index: 4;
     }
 
-    .hud::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 12px;
-      height: 100%;
-      background: var(--lux-green);
-    }
-
-    .hud .big {
-      font-size: 54px;
-      font-weight: 950;
-      line-height: 0.92;
-      letter-spacing: -0.06em;
-    }
-
-    .hud .line {
-      font-size: 15px;
-      font-weight: 900;
-      margin-top: 8px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #3e4142;
-    }
-
-    .hud.pass {
+    .resultHUD.pass {
       border-left-color: var(--lux-green);
     }
 
-    .hud.fail {
+    .resultHUD.fail {
       border-left-color: var(--lux-red);
     }
 
-    .hud.warn {
-      border-left-color: var(--lux-amber);
-    }
-
-    .card {
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 247, 247, 0.92)),
-        var(--lux-white);
-      padding: 18px;
-      box-shadow: var(--tight-shadow);
-      border: 1px solid var(--panel-border);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 6px;
-      background: linear-gradient(90deg, var(--lux-green), var(--lux-black));
-    }
-
-    .sectionTitle {
-      margin: 4px 0 16px;
-      font-size: 13px;
-      font-weight: 950;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
+    .count {
+      font-size: 64px;
+      line-height: 0.9;
+      font-weight: 900;
+      letter-spacing: -4px;
       color: var(--lux-black);
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+    .hudLine {
+      margin-top: 8px;
+      font-size: 15px;
+      text-transform: uppercase;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #444;
+    }
+
+    .controls {
+      background: var(--lux-white);
+      border-top: 8px solid var(--lux-green);
+      padding: 18px;
+      box-shadow: 0 8px 24px rgba(35, 31, 32, 0.12);
+    }
+
+    .sectionTitle {
+      margin: 0 0 16px;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 900;
+      color: var(--lux-black);
     }
 
     label {
       display: block;
-      font-weight: 900;
-      font-size: 11px;
-      margin-bottom: 7px;
-      color: #343233;
+      font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.11em;
+      letter-spacing: 1.5px;
+      font-weight: 900;
+      margin-bottom: 7px;
+      color: #333;
     }
 
-    input[type="number"],
-    input[type="text"] {
+    input {
       width: 100%;
-      padding: 13px 12px;
-      font-size: 19px;
-      border: 1px solid #c1c7c9;
+      padding: 14px 12px;
+      font-size: 22px;
+      font-weight: 800;
+      border: 2px solid var(--lux-gray-2);
       border-radius: 0;
-      background: #ffffff;
-      color: var(--lux-black);
-      font-weight: 750;
       outline: none;
+      margin-bottom: 14px;
     }
 
-    input[type="number"]:focus,
-    input[type="text"]:focus {
+    input:focus {
       border-color: var(--lux-green);
-      box-shadow: inset 0 -3px 0 var(--lux-green);
-    }
-
-    input[type="file"] {
-      width: 100%;
-      font-size: 15px;
-      padding: 12px;
-      border: 1px dashed #9ba2a5;
-      background: #f7f8f8;
+      box-shadow: inset 0 -4px 0 var(--lux-green);
     }
 
     button {
       width: 100%;
+      padding: 18px;
       border: 0;
       border-radius: 0;
-      padding: 16px;
-      font-size: 15px;
-      font-weight: 950;
+      margin-top: 10px;
       color: white;
       background: var(--lux-black);
-      margin-top: 12px;
-      touch-action: manipulation;
+      font-size: 17px;
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.12em;
-      position: relative;
-      overflow: hidden;
+      letter-spacing: 1.5px;
     }
 
-    button::after {
-      content: "";
-      position: absolute;
-      right: 0;
-      top: 0;
-      height: 100%;
-      width: 9px;
-      background: var(--lux-green);
-    }
-
-    button.secondary {
-      background: #4a4d4f;
-    }
-
-    button.good {
+    button.primary {
       background: var(--lux-green-dark);
     }
 
-    button.warnBtn {
-      background: #8b6500;
-    }
-
-    button:active {
-      transform: translateY(1px);
-    }
-
-    .smallButtonRow {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
     .status {
-      margin-top: 14px;
-      font-size: 22px;
-      font-weight: 950;
+      margin-top: 16px;
+      padding: 16px;
+      font-size: 24px;
+      font-weight: 900;
       text-align: center;
-      padding: 15px;
-      border-radius: 0;
-      background: #e7e9ea;
-      border-left: 8px solid #a8adb0;
       text-transform: uppercase;
-      letter-spacing: -0.02em;
+      background: #f1f1f1;
+      border-left: 10px solid var(--lux-yellow);
     }
 
-    .passText {
+    .status.pass {
+      background: #e7f3df;
       color: #255b16;
-      background: #e5f2dc;
       border-left-color: var(--lux-green);
     }
 
-    .failText {
+    .status.fail {
+      background: #ffe1e5;
       color: var(--lux-red);
-      background: #ffe0e5;
       border-left-color: var(--lux-red);
     }
 
-    .warnText {
-      color: #6b4a00;
-      background: #fff1cf;
-      border-left-color: var(--lux-amber);
-    }
-
-    .autoBox {
-      margin-top: 14px;
-      padding: 14px;
-      background: #eef0f1;
-      border-left: 5px solid var(--lux-green);
-    }
-
-    .autoBox strong {
-      display: block;
-      font-size: 13px;
-      font-weight: 950;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--lux-black);
-      margin-bottom: 5px;
-    }
-
-    .autoBox span {
-      display: block;
-      font-size: 14px;
-      color: #4a4d4f;
-      line-height: 1.4;
-    }
-
     .note {
-      color: #4a4d4f;
-      font-size: 14px;
+      margin-top: 16px;
+      padding: 14px;
+      background: #f2f3f3;
+      border-left: 6px solid var(--lux-green);
+      font-size: 15px;
       line-height: 1.45;
-      margin: 13px 0 0;
+      color: #333;
     }
 
-    .warningList {
+    .warnings {
       margin: 12px 0 0;
-      padding-left: 18px;
-      color: #5c3b00;
-      font-size: 14px;
-      line-height: 1.35;
-    }
-
-    .history {
-      margin-top: 14px;
-      overflow: auto;
-      background: white;
-      border: 1px solid #d4d8da;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-
-    th,
-    td {
-      text-align: left;
-      border-bottom: 1px solid #dde1e3;
-      padding: 8px 7px;
-      white-space: nowrap;
-    }
-
-    th {
-      font-size: 11px;
-      color: #4a4d4f;
-      text-transform: uppercase;
-      letter-spacing: 0.11em;
-      background: #eef0f1;
+      padding-left: 20px;
+      color: #6b4a00;
+      font-size: 15px;
+      line-height: 1.4;
     }
 
     .hidden {
       display: none;
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 700px) {
       .app {
         padding: 10px;
       }
@@ -559,39 +321,20 @@
         grid-template-columns: 1fr;
       }
 
-      .headerStats {
-        grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: 1fr;
-        min-width: 0;
-        border-left: 0;
-        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      .headerStatus {
+        text-align: left;
       }
 
-      .statTile {
-        border-bottom: 0;
-        border-right: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 12px;
+      .cameraPanel {
+        min-height: 420px;
       }
 
-      .statTile:last-child {
-        border-right: 0;
+      video {
+        min-height: 420px;
       }
 
-      .statValue {
-        font-size: 18px;
-      }
-
-      .grid,
-      .smallButtonRow {
-        grid-template-columns: 1fr;
-      }
-
-      .hud {
-        min-width: 190px;
-      }
-
-      .hud .big {
-        font-size: 44px;
+      .count {
+        font-size: 52px;
       }
     }
   </style>
@@ -599,144 +342,54 @@
 
 <body>
   <main class="app">
-    <div class="header">
-      <div class="headerMain">
-        <div class="brandLine">
-          <div class="luxLogo">
-            <span class="luxWord">LUX</span>
-            <span class="dynWord">dynamics</span>
-            <span class="luxMark"></span>
-          </div>
-          <span class="brandTag">Manufacturing Vision Tool</span>
+    <header class="header">
+      <div>
+        <div class="brand">
+          <span class="lux">LUX</span>
+          <span class="dynamics">dynamics</span>
+          <span class="brandMark"></span>
         </div>
-
-        <h1>Fastener Pack Counter</h1>
-
-        <p class="sub">
-          iPad camera verification for screw packaging. This version uses fast low-resolution scanning and strict glare rejection.
-        </p>
+        <h1>Fastener Counter</h1>
       </div>
 
-      <div class="headerStats">
-        <div class="statTile">
-          <span class="statLabel">Target</span>
-          <span class="statValue" id="targetStat">100</span>
-        </div>
-
-        <div class="statTile">
-          <span class="statLabel">Mode</span>
-          <span class="statValue" id="modePill">Camera</span>
-        </div>
-
-        <div class="statTile">
-          <span class="statLabel">Output</span>
-          <span class="statValue">PASS/FAIL</span>
-        </div>
+      <div class="headerStatus">
+        <span>Target</span>
+        <strong id="targetHeader">100</strong>
       </div>
-    </div>
+    </header>
 
-    <div class="productStrip">
-      <span>IK10+</span>
-      <span>DATALINE</span>
-      <span>PK10+</span>
-      <span>LUXLINE</span>
-      <span>WAVE+</span>
-      <span>360+</span>
-      <span>GRO+</span>
-      <span>QS</span>
-    </div>
-
-    <section class="layout">
-      <div class="cameraShell">
+    <section class="main">
+      <div class="cameraPanel">
         <video id="video" autoplay playsinline muted></video>
-        <canvas id="photoCanvas"></canvas>
         <canvas id="overlay"></canvas>
 
-        <div id="hud" class="hud warn">
-          <div class="big" id="countReadout">0</div>
-          <div class="line">Target: <span id="targetReadout">100</span></div>
-          <div class="line">Difference: <span id="differenceReadout">0</span></div>
-          <div class="line">Confidence: <span id="confidenceReadout">0%</span></div>
+        <div id="hud" class="resultHUD">
+          <div class="count" id="countReadout">0</div>
+          <div class="hudLine">Target: <span id="targetReadout">100</span></div>
+          <div class="hudLine">Difference: <span id="differenceReadout">0</span></div>
+          <div class="hudLine">Confidence: <span id="confidenceReadout">0%</span></div>
         </div>
       </div>
 
-      <div class="card">
-        <p class="sectionTitle">Scan Controls</p>
+      <aside class="controls">
+        <p class="sectionTitle">Pack Verification</p>
 
-        <div class="grid">
-          <div>
-            <label for="target">Target Count</label>
-            <input id="target" type="number" value="100" min="1" max="500" />
-          </div>
+        <label for="targetInput">Target Count</label>
+        <input id="targetInput" type="number" value="100" min="1" max="500" />
 
-          <div>
-            <label for="packageId">Package ID</label>
-            <input id="packageId" type="text" placeholder="Optional" />
-          </div>
+        <label for="packageInput">Package ID</label>
+        <input id="packageInput" type="text" placeholder="Optional" />
+
+        <button id="startButton">Start Camera</button>
+        <button id="scanButton" class="primary">Scan Screws</button>
+
+        <div id="status" class="status">Ready</div>
+        <ul id="warnings" class="warnings"></ul>
+
+        <div class="note">
+          Use a matte black mat. Spread screws apart. This version rejects tiny glare spots and does not estimate touching screws.
         </div>
-
-        <div class="autoBox">
-          <strong>Glare Rejection Enabled</strong>
-          <span>The app ignores tiny bright specks and does not estimate clusters. If screws are touching, spread them and scan again.</span>
-        </div>
-
-        <button id="cameraButton">Start Camera</button>
-        <button id="scanButton" class="good">Scan Screws</button>
-
-        <div class="smallButtonRow">
-          <button id="liveButton" class="secondary">Start Live Scan</button>
-          <button id="calibrateButton" class="warnBtn">Calibrate Size</button>
-        </div>
-
-        <div id="status" class="status warnText">Ready</div>
-        <ul id="warnings" class="warningList"></ul>
-      </div>
-    </section>
-
-    <section class="layout" style="margin-top: 14px;">
-      <div class="card">
-        <p class="sectionTitle">Scan Setup</p>
-
-        <div class="autoBox">
-          <strong>Best Setup</strong>
-          <span>Use a matte black mat, turn off flash, use soft overhead lighting, and keep screws separated. Do not scan shiny table surfaces.</span>
-        </div>
-
-        <p class="note">
-          Live scan now runs every 2.5 seconds instead of constantly. Manual Scan Screws is more reliable while testing.
-        </p>
-      </div>
-
-      <div class="card">
-        <p class="sectionTitle">Photo Test and Records</p>
-
-        <label for="photoInput">Test with a saved photo</label>
-        <input id="photoInput" type="file" accept="image/*" />
-
-        <div class="smallButtonRow">
-          <button id="saveButton" class="secondary">Save Result</button>
-          <button id="csvButton" class="secondary">Export CSV</button>
-        </div>
-
-        <div class="history">
-          <table>
-            <thead>
-              <tr>
-                <th>Time</th>
-                <th>Package</th>
-                <th>Target</th>
-                <th>Count</th>
-                <th>Result</th>
-              </tr>
-            </thead>
-            <tbody id="historyBody"></tbody>
-          </table>
-        </div>
-
-        <p class="note">
-          Use photo test mode if the camera view is hard to debug. Start with 10 screws, then 28, then 100.
-        </p>
-      </div>
+      </aside>
     </section>
 
     <canvas id="workCanvas" class="hidden"></canvas>
@@ -744,70 +397,41 @@
 
   <script>
     const video = document.getElementById("video");
-    const photoCanvas = document.getElementById("photoCanvas");
-    const photoCtx = photoCanvas.getContext("2d", { willReadFrequently: true });
-
     const overlay = document.getElementById("overlay");
     const overlayCtx = overlay.getContext("2d");
 
     const workCanvas = document.getElementById("workCanvas");
     const workCtx = workCanvas.getContext("2d", { willReadFrequently: true });
 
-    const targetInput = document.getElementById("target");
-    const packageIdInput = document.getElementById("packageId");
+    const targetInput = document.getElementById("targetInput");
+    const packageInput = document.getElementById("packageInput");
 
-    const countReadout = document.getElementById("countReadout");
+    const targetHeader = document.getElementById("targetHeader");
     const targetReadout = document.getElementById("targetReadout");
-    const targetStat = document.getElementById("targetStat");
+    const countReadout = document.getElementById("countReadout");
     const differenceReadout = document.getElementById("differenceReadout");
     const confidenceReadout = document.getElementById("confidenceReadout");
 
-    const statusBox = document.getElementById("status");
     const hud = document.getElementById("hud");
-    const warningsEl = document.getElementById("warnings");
-    const historyBody = document.getElementById("historyBody");
-    const modePill = document.getElementById("modePill");
+    const statusBox = document.getElementById("status");
+    const warningsBox = document.getElementById("warnings");
 
-    const ROI_MARGIN = 0.08;
-    const MAX_WORK_WIDTH = 640;
-    const LIVE_SCAN_DELAY_MS = 2500;
+    const ROI_MARGIN = 0.06;
+    const WORK_WIDTH = 640;
 
-    let liveTimer = null;
-    let latestResult = null;
-    let history = [];
-    let usingPhoto = false;
-    let calibratedAverageArea = Number(localStorage.getItem("averageScrewArea") || "0");
+    let lastResult = null;
 
-    loadSettings();
-    updateLabels();
-    updateHistory();
-    initializePreview();
-
-    targetInput.addEventListener("input", () => {
-      updateLabels();
-      saveSettings();
-      drawScanBox();
-    });
-
-    packageIdInput.addEventListener("input", saveSettings);
-
-    document.getElementById("cameraButton").addEventListener("click", startCamera);
+    targetInput.addEventListener("input", updateTargetLabels);
+    document.getElementById("startButton").addEventListener("click", startCamera);
     document.getElementById("scanButton").addEventListener("click", scan);
-    document.getElementById("liveButton").addEventListener("click", toggleLiveScan);
-    document.getElementById("calibrateButton").addEventListener("click", calibrateSize);
-    document.getElementById("saveButton").addEventListener("click", saveResult);
-    document.getElementById("csvButton").addEventListener("click", exportCSV);
-    document.getElementById("photoInput").addEventListener("change", loadPhoto);
 
-    window.addEventListener("resize", drawScanBox);
+    window.addEventListener("resize", drawEmptyOverlay);
+
+    updateTargetLabels();
+    drawStartupOverlay();
 
     async function startCamera() {
       try {
-        usingPhoto = false;
-        modePill.textContent = "Camera";
-        photoCanvas.style.display = "none";
-        video.style.display = "block";
-
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
@@ -825,120 +449,51 @@
 
         await video.play();
 
-        statusBox.textContent = "Camera ready";
+        statusBox.textContent = "Camera Ready";
         statusBox.className = "status";
-        drawScanBox();
+        drawEmptyOverlay();
       } catch (error) {
-        statusBox.textContent = "Camera blocked or unavailable";
-        statusBox.className = "status failText";
+        statusBox.textContent = "Camera Blocked";
+        statusBox.className = "status fail";
+        warningsBox.innerHTML = "<li>Open this page through HTTPS and allow camera access.</li>";
         console.error(error);
       }
     }
 
-    async function loadPhoto(event) {
-      const file = event.target.files[0];
-
-      if (!file) {
-        return;
-      }
-
-      const bitmap = await createImageBitmap(file);
-
-      usingPhoto = true;
-      modePill.textContent = "Photo";
-      video.style.display = "none";
-      photoCanvas.style.display = "block";
-
-      const maxWidth = 1200;
-      const scale = Math.min(1, maxWidth / bitmap.width);
-
-      photoCanvas.width = Math.round(bitmap.width * scale);
-      photoCanvas.height = Math.round(bitmap.height * scale);
-
-      photoCtx.drawImage(bitmap, 0, 0, photoCanvas.width, photoCanvas.height);
-
-      statusBox.textContent = "Photo loaded. Press Scan Screws.";
-      statusBox.className = "status";
-      drawScanBox();
-    }
-
     function scan() {
-      const source = getActiveSource();
-
-      if (!source) {
-        statusBox.textContent = "Start the camera or load a photo first";
-        statusBox.className = "status failText";
+      if (!video.videoWidth || !video.videoHeight) {
+        statusBox.textContent = "Start Camera First";
+        statusBox.className = "status fail";
         return;
       }
 
-      const result = analyzeSource(source);
+      const result = analyzeVideoFrame();
+      lastResult = result;
 
-      latestResult = result;
-
-      renderResult(result);
+      updateResult(result);
       drawResultOverlay(result);
     }
 
-    function toggleLiveScan() {
-      const button = document.getElementById("liveButton");
+    function analyzeVideoFrame() {
+      const sourceWidth = video.videoWidth;
+      const sourceHeight = video.videoHeight;
 
-      if (liveTimer) {
-        clearInterval(liveTimer);
-        liveTimer = null;
-        button.textContent = "Start Live Scan";
-        button.className = "secondary";
-        return;
-      }
-
-      if (usingPhoto) {
-        statusBox.textContent = "Live scan works with camera mode only";
-        statusBox.className = "status warnText";
-        return;
-      }
-
-      liveTimer = setInterval(scan, LIVE_SCAN_DELAY_MS);
-      button.textContent = "Stop Live Scan";
-      button.className = "warnBtn";
-
-      scan();
-    }
-
-    function getActiveSource() {
-      if (usingPhoto) {
-        if (!photoCanvas.width || !photoCanvas.height) {
-          return null;
-        }
-
-        return {
-          element: photoCanvas,
-          width: photoCanvas.width,
-          height: photoCanvas.height
-        };
-      }
-
-      if (!video.videoWidth || !video.videoHeight) {
-        return null;
-      }
-
-      return {
-        element: video,
-        width: video.videoWidth,
-        height: video.videoHeight
+      const roi = {
+        x: Math.round(sourceWidth * ROI_MARGIN),
+        y: Math.round(sourceHeight * ROI_MARGIN),
+        w: Math.round(sourceWidth * (1 - ROI_MARGIN * 2)),
+        h: Math.round(sourceHeight * (1 - ROI_MARGIN * 2))
       };
-    }
 
-    function analyzeSource(source) {
-      const roi = getSourceROI(source.width, source.height);
-
-      const scale = Math.min(1, MAX_WORK_WIDTH / roi.w);
-      const workWidth = Math.max(1, Math.round(roi.w * scale));
-      const workHeight = Math.max(1, Math.round(roi.h * scale));
+      const scale = WORK_WIDTH / roi.w;
+      const workWidth = WORK_WIDTH;
+      const workHeight = Math.round(roi.h * scale);
 
       workCanvas.width = workWidth;
       workCanvas.height = workHeight;
 
       workCtx.drawImage(
-        source.element,
+        video,
         roi.x,
         roi.y,
         roi.w,
@@ -950,58 +505,65 @@
       );
 
       const image = workCtx.getImageData(0, 0, workWidth, workHeight);
-      const gray = makeGray(image.data, workWidth, workHeight);
-      const blurred = boxBlur(gray, workWidth, workHeight);
-      const threshold = calculateAutoThreshold(blurred);
+      const gray = toGrayscale(image.data, workWidth, workHeight);
+      const smooth = blur3x3(gray, workWidth, workHeight);
 
-      let binary = thresholdImage(blurred, threshold);
-      binary = closeSmallGaps(binary, workWidth, workHeight);
+      const threshold = calculateThreshold(smooth);
+      const binary = createBinaryMask(smooth, threshold);
+      const cleaned = cleanMask(binary, workWidth, workHeight);
 
-      const imageArea = workWidth * workHeight;
-      const roughMinArea = Math.max(45, Math.round(imageArea * 0.00020));
-      const roughMaxArea = Math.max(800, Math.round(imageArea * 0.030));
+      const componentsRaw = findComponents(cleaned, workWidth, workHeight);
 
-      const roughComponents = findComponents(
-        binary,
-        workWidth,
-        workHeight,
-        roughMinArea,
-        roughMaxArea
-      );
+      const sizeModel = estimateScrewSize(componentsRaw, workWidth, workHeight);
 
-      const autoSizes = calculateAutoSizes(roughComponents, workWidth, workHeight);
-
-      const components = findComponents(
-        binary,
-        workWidth,
-        workHeight,
-        autoSizes.minArea,
-        autoSizes.maxArea
-      ).filter(component => passesShapeFilter(component));
+      const components = componentsRaw
+        .filter(component => isScrewLike(component, sizeModel))
+        .sort((a, b) => a.minY - b.minY || a.minX - b.minX);
 
       const target = Number(targetInput.value);
       const count = components.length;
       const difference = count - target;
-      const rejected = Math.max(0, roughComponents.length - components.length);
-      const confidence = calculateConfidence(components, target, rejected);
-      const warnings = buildWarnings(components, rejected, confidence, threshold);
+      const rejected = componentsRaw.length - components.length;
+      const confidence = estimateConfidence(count, target, rejected, components);
+
+      const warnings = [];
+
+      if (components.length === 0) {
+        warnings.push("No screws detected. Use a dark matte mat and softer lighting.");
+      }
+
+      if (rejected > 40) {
+        warnings.push("Many tiny bright spots were rejected. Reduce glare.");
+      }
+
+      if (confidence < 80) {
+        warnings.push("Low confidence. Spread screws apart and rescan.");
+      }
+
+      if (difference < 0) {
+        warnings.push("Count is below target.");
+      }
+
+      if (difference > 0) {
+        warnings.push("Count is above target.");
+      }
 
       return {
-        target,
-        count,
-        difference,
-        threshold,
         roi,
         workWidth,
         workHeight,
         components,
         rejected,
+        target,
+        count,
+        difference,
         confidence,
+        threshold,
         warnings
       };
     }
 
-    function makeGray(pixels, width, height) {
+    function toGrayscale(pixels, width, height) {
       const gray = new Uint8Array(width * height);
 
       for (let i = 0, p = 0; i < pixels.length; i += 4, p++) {
@@ -1015,22 +577,18 @@
       return gray;
     }
 
-    function boxBlur(gray, width, height) {
+    function blur3x3(gray, width, height) {
       const output = new Uint8Array(gray.length);
 
       for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
           let sum = 0;
 
-          sum += gray[(y - 1) * width + (x - 1)];
-          sum += gray[(y - 1) * width + x];
-          sum += gray[(y - 1) * width + (x + 1)];
-          sum += gray[y * width + (x - 1)];
-          sum += gray[y * width + x];
-          sum += gray[y * width + (x + 1)];
-          sum += gray[(y + 1) * width + (x - 1)];
-          sum += gray[(y + 1) * width + x];
-          sum += gray[(y + 1) * width + (x + 1)];
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              sum += gray[(y + dy) * width + (x + dx)];
+            }
+          }
 
           output[y * width + x] = Math.round(sum / 9);
         }
@@ -1039,49 +597,25 @@
       return output;
     }
 
-    function calculateAutoThreshold(gray) {
-      const otsu = otsuThreshold(gray);
-
-      let sum = 0;
-
-      for (const value of gray) {
-        sum += value;
-      }
-
-      const mean = sum / gray.length;
-
-      let variance = 0;
-
-      for (const value of gray) {
-        const d = value - mean;
-        variance += d * d;
-      }
-
-      const std = Math.sqrt(variance / gray.length);
-      const adaptive = Math.round(mean + std * 0.55);
-      const threshold = Math.max(otsu, adaptive);
-
-      return Math.max(70, Math.min(215, threshold));
-    }
-
-    function otsuThreshold(gray) {
+    function calculateThreshold(gray) {
       const hist = new Array(256).fill(0);
 
-      for (const value of gray) {
-        hist[value]++;
+      for (let i = 0; i < gray.length; i += 2) {
+        hist[gray[i]]++;
       }
 
-      const total = gray.length;
+      let total = 0;
       let sum = 0;
 
       for (let i = 0; i < 256; i++) {
+        total += hist[i];
         sum += i * hist[i];
       }
 
       let sumB = 0;
       let wB = 0;
-      let maxBetween = -1;
-      let threshold = 120;
+      let maxVariance = -1;
+      let otsu = 125;
 
       for (let t = 0; t < 256; t++) {
         wB += hist[t];
@@ -1100,18 +634,36 @@
 
         const mB = sumB / wB;
         const mF = (sum - sumB) / wF;
-        const between = wB * wF * (mB - mF) * (mB - mF);
+        const variance = wB * wF * (mB - mF) * (mB - mF);
 
-        if (between > maxBetween) {
-          maxBetween = between;
-          threshold = t;
+        if (variance > maxVariance) {
+          maxVariance = variance;
+          otsu = t;
         }
       }
 
-      return threshold;
+      let mean = 0;
+
+      for (let i = 0; i < gray.length; i += 3) {
+        mean += gray[i];
+      }
+
+      mean = mean / Math.ceil(gray.length / 3);
+
+      let variance = 0;
+
+      for (let i = 0; i < gray.length; i += 3) {
+        const d = gray[i] - mean;
+        variance += d * d;
+      }
+
+      const std = Math.sqrt(variance / Math.ceil(gray.length / 3));
+      const adaptive = mean + std * 0.65;
+
+      return Math.max(75, Math.min(210, Math.round(Math.max(otsu, adaptive))));
     }
 
-    function thresholdImage(gray, threshold) {
+    function createBinaryMask(gray, threshold) {
       const binary = new Uint8Array(gray.length);
 
       for (let i = 0; i < gray.length; i++) {
@@ -1123,11 +675,43 @@
       return binary;
     }
 
-    function closeSmallGaps(binary, width, height) {
-      const dilated = dilate(binary, width, height);
-      const closed = erode(dilated, width, height);
+    function cleanMask(binary, width, height) {
+      let output = removeLonelyPixels(binary, width, height);
+      output = dilate(output, width, height);
+      output = erode(output, width, height);
+      output = removeLonelyPixels(output, width, height);
 
-      return closed;
+      return output;
+    }
+
+    function removeLonelyPixels(binary, width, height) {
+      const output = new Uint8Array(binary.length);
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const index = y * width + x;
+
+          if (!binary[index]) {
+            continue;
+          }
+
+          let neighbors = 0;
+
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (binary[(y + dy) * width + (x + dx)]) {
+                neighbors++;
+              }
+            }
+          }
+
+          if (neighbors >= 4) {
+            output[index] = 1;
+          }
+        }
+      }
+
+      return output;
     }
 
     function dilate(binary, width, height) {
@@ -1174,37 +758,7 @@
       return output;
     }
 
-    function calculateAutoSizes(components, width, height) {
-      if (calibratedAverageArea > 0) {
-        return {
-          minArea: Math.max(35, Math.round(calibratedAverageArea * 0.30)),
-          maxArea: Math.max(250, Math.round(calibratedAverageArea * 3.40))
-        };
-      }
-
-      const imageArea = width * height;
-
-      const areas = components
-        .filter(component => passesShapeFilter(component))
-        .map(component => component.area)
-        .sort((a, b) => a - b);
-
-      if (areas.length < 4) {
-        return {
-          minArea: Math.max(55, Math.round(imageArea * 0.00025)),
-          maxArea: Math.max(900, Math.round(imageArea * 0.018))
-        };
-      }
-
-      const median = areas[Math.floor(areas.length / 2)];
-
-      return {
-        minArea: Math.max(45, Math.round(median * 0.35)),
-        maxArea: Math.max(300, Math.round(median * 3.20))
-      };
-    }
-
-    function findComponents(binary, width, height, minArea, maxArea) {
+    function findComponents(binary, width, height) {
       const visited = new Uint8Array(width * height);
       const components = [];
 
@@ -1227,7 +781,6 @@
 
           while (stack.length) {
             const index = stack.pop();
-
             area++;
 
             const cx = index % width;
@@ -1238,34 +791,23 @@
             if (cy < minY) minY = cy;
             if (cy > maxY) maxY = cy;
 
-            const left = index - 1;
-            const right = index + 1;
-            const up = index - width;
-            const down = index + width;
+            const neighbors = [
+              index - 1,
+              index + 1,
+              index - width,
+              index + width
+            ];
 
-            if (cx > 0 && binary[left] && !visited[left]) {
-              visited[left] = 1;
-              stack.push(left);
+            for (const next of neighbors) {
+              if (next < 0 || next >= binary.length) {
+                continue;
+              }
+
+              if (binary[next] && !visited[next]) {
+                visited[next] = 1;
+                stack.push(next);
+              }
             }
-
-            if (cx < width - 1 && binary[right] && !visited[right]) {
-              visited[right] = 1;
-              stack.push(right);
-            }
-
-            if (cy > 0 && binary[up] && !visited[up]) {
-              visited[up] = 1;
-              stack.push(up);
-            }
-
-            if (cy < height - 1 && binary[down] && !visited[down]) {
-              visited[down] = 1;
-              stack.push(down);
-            }
-          }
-
-          if (area < minArea || area > maxArea) {
-            continue;
           }
 
           const boxWidth = maxX - minX + 1;
@@ -1291,12 +833,53 @@
       return components;
     }
 
-    function passesShapeFilter(component) {
-      if (component.boxWidth < 5 || component.boxHeight < 5) {
+    function estimateScrewSize(components, width, height) {
+      const imageArea = width * height;
+
+      const possible = components
+        .filter(c => {
+          return (
+            c.area > imageArea * 0.00025 &&
+            c.area < imageArea * 0.025 &&
+            c.boxWidth >= 6 &&
+            c.boxHeight >= 6 &&
+            c.aspect <= 14 &&
+            c.density >= 0.08 &&
+            c.density <= 0.85
+          );
+        })
+        .map(c => c.area)
+        .sort((a, b) => a - b);
+
+      if (possible.length < 3) {
+        return {
+          minArea: Math.max(90, Math.round(imageArea * 0.00045)),
+          maxArea: Math.max(1200, Math.round(imageArea * 0.015))
+        };
+      }
+
+      const median = possible[Math.floor(possible.length / 2)];
+
+      return {
+        minArea: Math.max(80, Math.round(median * 0.35)),
+        maxArea: Math.max(500, Math.round(median * 3.0))
+      };
+    }
+
+    function isScrewLike(component, sizeModel) {
+      if (component.area < sizeModel.minArea) {
         return false;
       }
 
-      if (component.aspect > 18) {
+      if (component.area > sizeModel.maxArea) {
+        return false;
+      }
+
+      if (component.boxWidth < 6 || component.boxHeight < 6) {
+        return false;
+      }
+
+      if (component.aspect > 14) {
         return false;
       }
 
@@ -1304,116 +887,73 @@
         return false;
       }
 
-      if (component.density > 0.95 && component.area < 180) {
+      if (component.density > 0.9 && component.area < sizeModel.minArea * 1.6) {
         return false;
       }
 
       return true;
     }
 
-    function calculateConfidence(components, target, rejected) {
-      let confidence = 98;
+    function estimateConfidence(count, target, rejected, components) {
+      let confidence = 96;
 
-      if (components.length === 0) {
+      if (count === 0) {
         return 0;
       }
 
-      if (rejected > 80) {
-        confidence -= 25;
-      } else if (rejected > 35) {
+      if (rejected > 60) {
+        confidence -= 24;
+      } else if (rejected > 30) {
         confidence -= 12;
       }
 
-      const longObjects = components.filter(component => component.aspect > 12).length;
+      const veryLong = components.filter(c => c.aspect > 10).length;
 
-      confidence -= Math.min(18, longObjects * 3);
+      confidence -= veryLong * 3;
 
-      if (Math.abs(components.length - target) > 10) {
-        confidence -= 6;
+      if (Math.abs(count - target) > 10) {
+        confidence -= 8;
       }
 
       return Math.max(10, Math.min(99, Math.round(confidence)));
     }
 
-    function buildWarnings(components, rejected, confidence, threshold) {
-      const warnings = [];
-
-      if (components.length === 0) {
-        warnings.push("No screws detected. Use a dark matte mat and softer lighting.");
-      }
-
-      if (rejected > 80) {
-        warnings.push("Too many tiny bright specks were rejected. Reduce glare or change the mat.");
-      }
-
-      if (confidence < 80) {
-        warnings.push("Low confidence. Spread screws farther apart and rescan.");
-      }
-
-      if (threshold > 200) {
-        warnings.push("Image is very bright. Reduce glare or move away from direct light.");
-      }
-
-      const target = Number(targetInput.value);
-
-      if (components.length < target) {
-        warnings.push("Count is below target.");
-      }
-
-      if (components.length > target) {
-        warnings.push("Count is above target.");
-      }
-
-      return warnings;
-    }
-
-    function getSourceROI(width, height) {
-      const x = Math.round(width * ROI_MARGIN);
-      const y = Math.round(height * ROI_MARGIN);
-      const w = Math.round(width * (1 - ROI_MARGIN * 2));
-      const h = Math.round(height * (1 - ROI_MARGIN * 2));
-
-      return { x, y, w, h };
-    }
-
-    function renderResult(result) {
-      countReadout.textContent = String(result.count);
-      targetReadout.textContent = String(result.target);
-      targetStat.textContent = String(result.target);
-      differenceReadout.textContent = String(result.difference);
+    function updateResult(result) {
+      countReadout.textContent = result.count;
+      targetReadout.textContent = result.target;
+      targetHeader.textContent = result.target;
+      differenceReadout.textContent = result.difference;
       confidenceReadout.textContent = result.confidence + "%";
 
       if (result.difference === 0 && result.confidence >= 80) {
-        statusBox.textContent = "PASS: Exactly " + result.target + " detected";
-        statusBox.className = "status passText";
-        hud.className = "hud pass";
-      } else if (result.difference === 0) {
-        statusBox.textContent = "Count matches, but rescan recommended";
-        statusBox.className = "status warnText";
-        hud.className = "hud warn";
+        statusBox.textContent = "Pass";
+        statusBox.className = "status pass";
+        hud.className = "resultHUD pass";
       } else if (result.difference < 0) {
-        statusBox.textContent = "Missing " + Math.abs(result.difference) + " screws";
-        statusBox.className = "status failText";
-        hud.className = "hud fail";
+        statusBox.textContent = "Missing " + Math.abs(result.difference);
+        statusBox.className = "status fail";
+        hud.className = "resultHUD fail";
       } else {
-        statusBox.textContent = "Remove " + result.difference + " screws";
-        statusBox.className = "status failText";
-        hud.className = "hud fail";
+        statusBox.textContent = "Remove " + result.difference;
+        statusBox.className = "status fail";
+        hud.className = "resultHUD fail";
       }
 
-      warningsEl.innerHTML = "";
+      warningsBox.innerHTML = "";
 
-      result.warnings.forEach(warning => {
+      for (const warning of result.warnings) {
         const li = document.createElement("li");
-
         li.textContent = warning;
-        warningsEl.appendChild(li);
-      });
+        warningsBox.appendChild(li);
+      }
     }
 
-    function drawScanBox() {
-      const source = usingPhoto ? photoCanvas : video;
-      const rect = source.getBoundingClientRect();
+    function drawStartupOverlay() {
+      setTimeout(drawEmptyOverlay, 50);
+    }
+
+    function drawEmptyOverlay() {
+      const rect = video.getBoundingClientRect();
 
       if (!rect.width || !rect.height) {
         return;
@@ -1429,205 +969,47 @@
       const w = overlay.width * (1 - ROI_MARGIN * 2);
       const h = overlay.height * (1 - ROI_MARGIN * 2);
 
-      overlayCtx.lineWidth = 4;
-      overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.98)";
+      overlayCtx.lineWidth = 5;
+      overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.95)";
       overlayCtx.strokeRect(x, y, w, h);
 
-      overlayCtx.fillStyle = "rgba(116, 184, 67, 0.98)";
-      overlayCtx.font = "22px system-ui";
-      overlayCtx.fillText("Scan Area", x + 10, Math.max(28, y - 10));
+      overlayCtx.fillStyle = "rgba(116, 184, 67, 0.95)";
+      overlayCtx.font = "22px Arial";
+      overlayCtx.fillText("Scan Area", x + 12, Math.max(30, y - 12));
     }
 
     function drawResultOverlay(result) {
-      drawScanBox();
+      drawEmptyOverlay();
 
-      const source = usingPhoto ? photoCanvas : video;
-      const rect = source.getBoundingClientRect();
+      const rect = video.getBoundingClientRect();
 
-      const scaleX = (rect.width * (1 - ROI_MARGIN * 2)) / result.workWidth;
-      const scaleY = (rect.height * (1 - ROI_MARGIN * 2)) / result.workHeight;
-      const offsetX = rect.width * ROI_MARGIN;
-      const offsetY = rect.height * ROI_MARGIN;
+      const displayRoiX = rect.width * ROI_MARGIN;
+      const displayRoiY = rect.height * ROI_MARGIN;
+      const displayRoiW = rect.width * (1 - ROI_MARGIN * 2);
+      const displayRoiH = rect.height * (1 - ROI_MARGIN * 2);
+
+      const scaleX = displayRoiW / WORK_WIDTH;
+      const scaleY = displayRoiH / result.workHeight;
 
       overlayCtx.lineWidth = 2;
-      overlayCtx.font = "15px system-ui";
-      overlayCtx.textBaseline = "top";
       overlayCtx.strokeStyle = "#74b843";
       overlayCtx.fillStyle = "#74b843";
+      overlayCtx.font = "14px Arial";
 
-      result.components.forEach((component, index) => {
-        const x = offsetX + component.minX * scaleX;
-        const y = offsetY + component.minY * scaleY;
-        const w = component.boxWidth * scaleX;
-        const h = component.boxHeight * scaleY;
+      result.components.forEach((c, index) => {
+        const x = displayRoiX + c.minX * scaleX;
+        const y = displayRoiY + c.minY * scaleY;
+        const w = c.boxWidth * scaleX;
+        const h = c.boxHeight * scaleY;
 
         overlayCtx.strokeRect(x, y, w, h);
-        overlayCtx.fillText(String(index + 1), x, Math.max(0, y - 18));
+        overlayCtx.fillText(String(index + 1), x, Math.max(0, y - 16));
       });
     }
 
-    function calibrateSize() {
-      if (!latestResult || latestResult.components.length < 5) {
-        statusBox.textContent = "Scan at least 5 separated screws before calibrating";
-        statusBox.className = "status warnText";
-        return;
-      }
-
-      const areas = latestResult.components
-        .map(component => component.area)
-        .sort((a, b) => a - b);
-
-      const middleStart = Math.floor(areas.length * 0.2);
-      const middleEnd = Math.ceil(areas.length * 0.8);
-      const middle = areas.slice(middleStart, middleEnd);
-
-      calibratedAverageArea =
-        middle.reduce((sum, value) => sum + value, 0) / middle.length;
-
-      localStorage.setItem("averageScrewArea", String(calibratedAverageArea));
-
-      statusBox.textContent = "Calibration saved";
-      statusBox.className = "status passText";
-    }
-
-    function saveResult() {
-      if (!latestResult) {
-        statusBox.textContent = "Scan before saving";
-        statusBox.className = "status warnText";
-        return;
-      }
-
-      const row = {
-        time: new Date().toLocaleString(),
-        packageId: packageIdInput.value.trim() || "Unlabeled",
-        target: latestResult.target,
-        count: latestResult.count,
-        result:
-          latestResult.difference === 0
-            ? "PASS"
-            : latestResult.difference < 0
-              ? "MISSING " + Math.abs(latestResult.difference)
-              : "REMOVE " + latestResult.difference,
-        confidence: latestResult.confidence
-      };
-
-      history.unshift(row);
-      history = history.slice(0, 50);
-
-      localStorage.setItem("scanHistory", JSON.stringify(history));
-
-      updateHistory();
-
-      statusBox.textContent = "Result saved";
-      statusBox.className = "status passText";
-    }
-
-    function updateHistory() {
-      try {
-        history = JSON.parse(localStorage.getItem("scanHistory") || "[]");
-      } catch {
-        history = [];
-      }
-
-      historyBody.innerHTML = "";
-
-      history.slice(0, 12).forEach(row => {
-        const tr = document.createElement("tr");
-
-        [row.time, row.packageId, row.target, row.count, row.result].forEach(value => {
-          const td = document.createElement("td");
-
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-
-        historyBody.appendChild(tr);
-      });
-    }
-
-    function exportCSV() {
-      if (!history.length) {
-        statusBox.textContent = "No saved results to export";
-        statusBox.className = "status warnText";
-        return;
-      }
-
-      const headers = ["Time", "Package ID", "Target", "Count", "Result", "Confidence"];
-      const lines = [headers.join(",")];
-
-      history.forEach(row => {
-        lines.push([
-          csvEscape(row.time),
-          csvEscape(row.packageId),
-          row.target,
-          row.count,
-          csvEscape(row.result),
-          row.confidence
-        ].join(","));
-      });
-
-      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-
-      a.href = url;
-      a.download = "screw-count-results.csv";
-      a.click();
-
-      URL.revokeObjectURL(url);
-    }
-
-    function csvEscape(value) {
-      const text = String(value);
-
-      if (text.includes(",") || text.includes('"') || text.includes("\n")) {
-        return '"' + text.replaceAll('"', '""') + '"';
-      }
-
-      return text;
-    }
-
-    function saveSettings() {
-      const settings = {
-        target: targetInput.value,
-        packageId: packageIdInput.value
-      };
-
-      localStorage.setItem("screwCounterSettings", JSON.stringify(settings));
-    }
-
-    function loadSettings() {
-      try {
-        const settings = JSON.parse(localStorage.getItem("screwCounterSettings") || "{}");
-
-        if (settings.target) targetInput.value = settings.target;
-        if (settings.packageId) packageIdInput.value = settings.packageId;
-      } catch {}
-    }
-
-    function updateLabels() {
+    function updateTargetLabels() {
       targetReadout.textContent = targetInput.value;
-      targetStat.textContent = targetInput.value;
-    }
-
-    function initializePreview() {
-      photoCanvas.width = 1280;
-      photoCanvas.height = 720;
-      photoCanvas.style.display = "block";
-      video.style.display = "none";
-
-      photoCtx.fillStyle = "#231f20";
-      photoCtx.fillRect(0, 0, photoCanvas.width, photoCanvas.height);
-
-      photoCtx.fillStyle = "#e6e7e8";
-      photoCtx.font = "42px system-ui";
-      photoCtx.fillText("LUX FASTENER VISION", 40, 86);
-
-      photoCtx.font = "22px system-ui";
-      photoCtx.fillText("Start the camera or load a test photo", 44, 126);
-
-      usingPhoto = true;
-      drawScanBox();
+      targetHeader.textContent = targetInput.value;
     }
   </script>
 </body>

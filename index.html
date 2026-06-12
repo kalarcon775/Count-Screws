@@ -23,7 +23,7 @@
       --lux-red: #b00020;
       --lux-amber: #a66a00;
 
-      --shadow: 0 24px 50px rgba(35, 31, 32, 0.2);
+      --shadow: 0 24px 50px rgba(35, 31, 32, 0.20);
       --tight-shadow: 0 10px 22px rgba(35, 31, 32, 0.16);
       --panel-border: rgba(35, 31, 32, 0.16);
     }
@@ -41,23 +41,10 @@
       color: var(--lux-black);
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(90deg, rgba(35, 31, 32, 0.035) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(35, 31, 32, 0.025) 1px, transparent 1px);
-      background-size: 44px 44px;
-      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
-    }
-
     .app {
       max-width: 1240px;
       margin: 0 auto;
       padding: 18px;
-      position: relative;
     }
 
     .header {
@@ -149,7 +136,6 @@
       left: 15px;
       border-left: 24px solid var(--lux-green);
       opacity: 0.65;
-      mix-blend-mode: normal;
     }
 
     .brandTag {
@@ -167,7 +153,7 @@
       line-height: 0.92;
       letter-spacing: -0.07em;
       font-weight: 950;
-      max-width: 720px;
+      max-width: 760px;
       text-transform: uppercase;
     }
 
@@ -175,7 +161,7 @@
       margin: 13px 0 0;
       color: #d7dbdc;
       font-size: 17px;
-      max-width: 650px;
+      max-width: 670px;
       line-height: 1.4;
     }
 
@@ -247,9 +233,7 @@
     }
 
     .cameraShell {
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0)),
-        var(--lux-charcoal);
+      background: var(--lux-charcoal);
       overflow: hidden;
       position: relative;
       min-height: 468px;
@@ -271,15 +255,15 @@
       text-transform: uppercase;
     }
 
-    #video {
-      display: none;
-    }
-
-    #displayCanvas {
+    #video,
+    #photoCanvas {
       display: block;
       width: 100%;
       background: #111;
-      min-height: 460px;
+    }
+
+    #photoCanvas {
+      display: none;
     }
 
     #overlay {
@@ -300,6 +284,7 @@
       box-shadow: var(--tight-shadow);
       border-left: 8px solid var(--lux-amber);
       color: var(--lux-black);
+      z-index: 4;
     }
 
     .hud::after {
@@ -387,8 +372,7 @@
     }
 
     input[type="number"],
-    input[type="text"],
-    select {
+    input[type="text"] {
       width: 100%;
       padding: 13px 12px;
       font-size: 19px;
@@ -401,8 +385,7 @@
     }
 
     input[type="number"]:focus,
-    input[type="text"]:focus,
-    select:focus {
+    input[type="text"]:focus {
       border-color: var(--lux-green);
       box-shadow: inset 0 -3px 0 var(--lux-green);
     }
@@ -563,7 +546,6 @@
       background: #eef0f1;
     }
 
-    .hiddenControl,
     .hidden {
       display: none;
     }
@@ -631,7 +613,7 @@
         <h1>Fastener Pack Counter</h1>
 
         <p class="sub">
-          iPad camera verification for 100-count screw packaging. Built for flat-mat scans, automatic detection, inspection records, and quick pass/fail checks.
+          iPad camera verification for screw packaging. This version uses fast low-resolution scanning and strict glare rejection.
         </p>
       </div>
 
@@ -667,7 +649,7 @@
     <section class="layout">
       <div class="cameraShell">
         <video id="video" autoplay playsinline muted></video>
-        <canvas id="displayCanvas"></canvas>
+        <canvas id="photoCanvas"></canvas>
         <canvas id="overlay"></canvas>
 
         <div id="hud" class="hud warn">
@@ -694,18 +676,8 @@
         </div>
 
         <div class="autoBox">
-          <strong>Auto Detection Enabled</strong>
-          <span>The app automatically adjusts image brightness, screw size filtering, and scan sensitivity during each scan.</span>
-        </div>
-
-        <div class="hiddenControl">
-          <input id="threshold" type="range" value="145" min="40" max="240" step="1" />
-          <input id="minArea" type="number" value="70" min="1" max="10000" />
-          <input id="maxArea" type="range" value="6500" min="100" max="40000" step="100" />
-          <input id="leftMargin" type="range" value="6" min="0" max="35" step="1" />
-          <input id="rightMargin" type="range" value="6" min="0" max="35" step="1" />
-          <input id="topMargin" type="range" value="6" min="0" max="35" step="1" />
-          <input id="bottomMargin" type="range" value="6" min="0" max="35" step="1" />
+          <strong>Glare Rejection Enabled</strong>
+          <span>The app ignores tiny bright specks and does not estimate clusters. If screws are touching, spread them and scan again.</span>
         </div>
 
         <button id="cameraButton">Start Camera</button>
@@ -713,7 +685,7 @@
 
         <div class="smallButtonRow">
           <button id="liveButton" class="secondary">Start Live Scan</button>
-          <button id="calibrateButton" class="warnBtn">Auto Calibrate</button>
+          <button id="calibrateButton" class="warnBtn">Calibrate Size</button>
         </div>
 
         <div id="status" class="status warnText">Ready</div>
@@ -723,15 +695,15 @@
 
     <section class="layout" style="margin-top: 14px;">
       <div class="card">
-        <p class="sectionTitle">Auto Scan Area</p>
+        <p class="sectionTitle">Scan Setup</p>
 
         <div class="autoBox">
-          <strong>Mat Boundary Mode</strong>
-          <span>The app scans the center area of the camera view and ignores the outer edge where hands, bags, labels, and table objects usually appear.</span>
+          <strong>Best Setup</strong>
+          <span>Use a matte black mat, turn off flash, use soft overhead lighting, and keep screws separated. Do not scan shiny table surfaces.</span>
         </div>
 
         <p class="note">
-          Keep the screws inside the green scan box. Use a matte dark mat and spread the screws into one layer before scanning.
+          Live scan now runs every 2.5 seconds instead of constantly. Manual Scan Screws is more reliable while testing.
         </p>
       </div>
 
@@ -762,7 +734,7 @@
         </div>
 
         <p class="note">
-          Use photo test mode to tune the setup before using the iPad camera. The best setup is a matte dark mat, overhead iPad, and diffused lighting.
+          Use photo test mode if the camera view is hard to debug. Start with 10 screws, then 28, then 100.
         </p>
       </div>
     </section>
@@ -772,8 +744,8 @@
 
   <script>
     const video = document.getElementById("video");
-    const displayCanvas = document.getElementById("displayCanvas");
-    const displayCtx = displayCanvas.getContext("2d", { willReadFrequently: true });
+    const photoCanvas = document.getElementById("photoCanvas");
+    const photoCtx = photoCanvas.getContext("2d", { willReadFrequently: true });
 
     const overlay = document.getElementById("overlay");
     const overlayCtx = overlay.getContext("2d");
@@ -783,15 +755,6 @@
 
     const targetInput = document.getElementById("target");
     const packageIdInput = document.getElementById("packageId");
-
-    const thresholdInput = document.getElementById("threshold");
-    const minAreaInput = document.getElementById("minArea");
-    const maxAreaInput = document.getElementById("maxArea");
-
-    const leftMarginInput = document.getElementById("leftMargin");
-    const rightMarginInput = document.getElementById("rightMargin");
-    const topMarginInput = document.getElementById("topMargin");
-    const bottomMarginInput = document.getElementById("bottomMargin");
 
     const countReadout = document.getElementById("countReadout");
     const targetReadout = document.getElementById("targetReadout");
@@ -805,21 +768,25 @@
     const historyBody = document.getElementById("historyBody");
     const modePill = document.getElementById("modePill");
 
+    const ROI_MARGIN = 0.08;
+    const MAX_WORK_WIDTH = 640;
+    const LIVE_SCAN_DELAY_MS = 2500;
+
     let liveTimer = null;
     let latestResult = null;
     let history = [];
-    let loadedImage = null;
     let usingPhoto = false;
     let calibratedAverageArea = Number(localStorage.getItem("averageScrewArea") || "0");
 
     loadSettings();
     updateLabels();
     updateHistory();
-    initializeCanvas();
+    initializePreview();
 
     targetInput.addEventListener("input", () => {
       updateLabels();
       saveSettings();
+      drawScanBox();
     });
 
     packageIdInput.addEventListener("input", saveSettings);
@@ -832,17 +799,20 @@
     document.getElementById("csvButton").addEventListener("click", exportCSV);
     document.getElementById("photoInput").addEventListener("change", loadPhoto);
 
+    window.addEventListener("resize", drawScanBox);
+
     async function startCamera() {
       try {
         usingPhoto = false;
-        loadedImage = null;
         modePill.textContent = "Camera";
+        photoCanvas.style.display = "none";
+        video.style.display = "block";
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
           },
           audio: false
         });
@@ -853,39 +823,15 @@
           video.onloadedmetadata = resolve;
         });
 
-        video.play();
-        drawCameraFrame();
+        await video.play();
 
         statusBox.textContent = "Camera ready";
         statusBox.className = "status";
+        drawScanBox();
       } catch (error) {
         statusBox.textContent = "Camera blocked or unavailable";
         statusBox.className = "status failText";
         console.error(error);
-      }
-    }
-
-    function drawCameraFrame() {
-      if (!video.videoWidth || !video.videoHeight) {
-        return;
-      }
-
-      setCanvasSize(video.videoWidth, video.videoHeight);
-      displayCtx.drawImage(video, 0, 0, displayCanvas.width, displayCanvas.height);
-      drawOverlayOnly();
-    }
-
-    function setCanvasSize(sourceWidth, sourceHeight) {
-      const maxWidth = 1200;
-      const scale = Math.min(1, maxWidth / sourceWidth);
-      const width = Math.round(sourceWidth * scale);
-      const height = Math.round(sourceHeight * scale);
-
-      if (displayCanvas.width !== width || displayCanvas.height !== height) {
-        displayCanvas.width = width;
-        displayCanvas.height = height;
-        overlay.width = width;
-        overlay.height = height;
       }
     }
 
@@ -898,32 +844,34 @@
 
       const bitmap = await createImageBitmap(file);
 
-      loadedImage = bitmap;
       usingPhoto = true;
       modePill.textContent = "Photo";
+      video.style.display = "none";
+      photoCanvas.style.display = "block";
 
-      setCanvasSize(bitmap.width, bitmap.height);
-      displayCtx.drawImage(bitmap, 0, 0, displayCanvas.width, displayCanvas.height);
-      drawOverlayOnly();
+      const maxWidth = 1200;
+      const scale = Math.min(1, maxWidth / bitmap.width);
+
+      photoCanvas.width = Math.round(bitmap.width * scale);
+      photoCanvas.height = Math.round(bitmap.height * scale);
+
+      photoCtx.drawImage(bitmap, 0, 0, photoCanvas.width, photoCanvas.height);
 
       statusBox.textContent = "Photo loaded. Press Scan Screws.";
       statusBox.className = "status";
+      drawScanBox();
     }
 
     function scan() {
-      if (usingPhoto && loadedImage) {
-        displayCtx.drawImage(loadedImage, 0, 0, displayCanvas.width, displayCanvas.height);
-      } else {
-        if (!video.videoWidth || !video.videoHeight) {
-          statusBox.textContent = "Start the camera first";
-          statusBox.className = "status failText";
-          return;
-        }
+      const source = getActiveSource();
 
-        drawCameraFrame();
+      if (!source) {
+        statusBox.textContent = "Start the camera or load a photo first";
+        statusBox.className = "status failText";
+        return;
       }
 
-      const result = analyzeDisplayCanvas();
+      const result = analyzeSource(source);
 
       latestResult = result;
 
@@ -943,49 +891,118 @@
       }
 
       if (usingPhoto) {
-        statusBox.textContent = "Live scan works with the camera, not photo mode";
+        statusBox.textContent = "Live scan works with camera mode only";
         statusBox.className = "status warnText";
         return;
       }
 
-      liveTimer = setInterval(scan, 900);
+      liveTimer = setInterval(scan, LIVE_SCAN_DELAY_MS);
       button.textContent = "Stop Live Scan";
       button.className = "warnBtn";
 
       scan();
     }
 
-    function getROI(width, height) {
-      const left = Number(leftMarginInput.value) / 100;
-      const right = Number(rightMarginInput.value) / 100;
-      const top = Number(topMarginInput.value) / 100;
-      const bottom = Number(bottomMarginInput.value) / 100;
+    function getActiveSource() {
+      if (usingPhoto) {
+        if (!photoCanvas.width || !photoCanvas.height) {
+          return null;
+        }
 
-      const x = Math.round(width * left);
-      const y = Math.round(height * top);
-      const w = Math.max(1, Math.round(width * (1 - left - right)));
-      const h = Math.max(1, Math.round(height * (1 - top - bottom)));
+        return {
+          element: photoCanvas,
+          width: photoCanvas.width,
+          height: photoCanvas.height
+        };
+      }
 
-      return { x, y, w, h };
+      if (!video.videoWidth || !video.videoHeight) {
+        return null;
+      }
+
+      return {
+        element: video,
+        width: video.videoWidth,
+        height: video.videoHeight
+      };
     }
 
-    function analyzeDisplayCanvas() {
-      const width = displayCanvas.width;
-      const height = displayCanvas.height;
-      const roi = getROI(width, height);
+    function analyzeSource(source) {
+      const roi = getSourceROI(source.width, source.height);
 
-      workCanvas.width = roi.w;
-      workCanvas.height = roi.h;
+      const scale = Math.min(1, MAX_WORK_WIDTH / roi.w);
+      const workWidth = Math.max(1, Math.round(roi.w * scale));
+      const workHeight = Math.max(1, Math.round(roi.h * scale));
+
+      workCanvas.width = workWidth;
+      workCanvas.height = workHeight;
 
       workCtx.drawImage(
-        displayCanvas,
-        roi.x, roi.y, roi.w, roi.h,
-        0, 0, roi.w, roi.h
+        source.element,
+        roi.x,
+        roi.y,
+        roi.w,
+        roi.h,
+        0,
+        0,
+        workWidth,
+        workHeight
       );
 
-      const image = workCtx.getImageData(0, 0, roi.w, roi.h);
-      const pixels = image.data;
-      const gray = new Uint8Array(roi.w * roi.h);
+      const image = workCtx.getImageData(0, 0, workWidth, workHeight);
+      const gray = makeGray(image.data, workWidth, workHeight);
+      const blurred = boxBlur(gray, workWidth, workHeight);
+      const threshold = calculateAutoThreshold(blurred);
+
+      let binary = thresholdImage(blurred, threshold);
+      binary = closeSmallGaps(binary, workWidth, workHeight);
+
+      const imageArea = workWidth * workHeight;
+      const roughMinArea = Math.max(45, Math.round(imageArea * 0.00020));
+      const roughMaxArea = Math.max(800, Math.round(imageArea * 0.030));
+
+      const roughComponents = findComponents(
+        binary,
+        workWidth,
+        workHeight,
+        roughMinArea,
+        roughMaxArea
+      );
+
+      const autoSizes = calculateAutoSizes(roughComponents, workWidth, workHeight);
+
+      const components = findComponents(
+        binary,
+        workWidth,
+        workHeight,
+        autoSizes.minArea,
+        autoSizes.maxArea
+      ).filter(component => passesShapeFilter(component));
+
+      const target = Number(targetInput.value);
+      const count = components.length;
+      const difference = count - target;
+      const rejected = Math.max(0, roughComponents.length - components.length);
+      const confidence = calculateConfidence(components, target, rejected);
+      const warnings = buildWarnings(components, rejected, confidence, threshold);
+
+      return {
+        target,
+        count,
+        difference,
+        threshold,
+        roi,
+        workWidth,
+        workHeight,
+        components,
+        rejected,
+        confidence,
+        warnings
+      };
+    }
+
+    function makeGray(pixels, width, height) {
+      const gray = new Uint8Array(width * height);
 
       for (let i = 0, p = 0; i < pixels.length; i += 4, p++) {
         const r = pixels[i];
@@ -995,57 +1012,31 @@
         gray[p] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
       }
 
-      const autoThreshold = calculateAutoThreshold(gray);
-      const binary = new Uint8Array(roi.w * roi.h);
+      return gray;
+    }
 
-      for (let i = 0; i < gray.length; i++) {
-        if (gray[i] >= autoThreshold) {
-          binary[i] = 1;
+    function boxBlur(gray, width, height) {
+      const output = new Uint8Array(gray.length);
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          let sum = 0;
+
+          sum += gray[(y - 1) * width + (x - 1)];
+          sum += gray[(y - 1) * width + x];
+          sum += gray[(y - 1) * width + (x + 1)];
+          sum += gray[y * width + (x - 1)];
+          sum += gray[y * width + x];
+          sum += gray[y * width + (x + 1)];
+          sum += gray[(y + 1) * width + (x - 1)];
+          sum += gray[(y + 1) * width + x];
+          sum += gray[(y + 1) * width + (x + 1)];
+
+          output[y * width + x] = Math.round(sum / 9);
         }
       }
 
-      const cleaned = removeNoise(binary, roi.w, roi.h);
-
-      const roughComponents = findComponents(
-        cleaned,
-        roi.w,
-        roi.h,
-        10,
-        60000
-      );
-
-      const autoSizes = calculateAutoSizes(roughComponents, roi.w, roi.h);
-
-      thresholdInput.value = String(autoThreshold);
-      minAreaInput.value = String(autoSizes.minArea);
-      maxAreaInput.value = String(autoSizes.maxArea);
-
-      const components = findComponents(
-        cleaned,
-        roi.w,
-        roi.h,
-        autoSizes.minArea,
-        autoSizes.maxArea
-      );
-
-      const final = estimateFinalCount(components, autoSizes.maxArea);
-      const target = Number(targetInput.value);
-      const difference = final.count - target;
-      const confidence = calculateConfidence(final, components, target);
-      const warnings = buildWarnings(final, components, confidence);
-
-      return {
-        target,
-        count: final.count,
-        rawObjects: components.length,
-        difference,
-        threshold: autoThreshold,
-        roi,
-        components,
-        clusterEstimates: final.clusterEstimates,
-        confidence,
-        warnings
-      };
+      return output;
     }
 
     function calculateAutoThreshold(gray) {
@@ -1067,10 +1058,10 @@
       }
 
       const std = Math.sqrt(variance / gray.length);
-      const adaptive = Math.round(mean + std * 0.75);
+      const adaptive = Math.round(mean + std * 0.55);
       const threshold = Math.max(otsu, adaptive);
 
-      return Math.max(55, Math.min(235, threshold));
+      return Math.max(70, Math.min(215, threshold));
     }
 
     function otsuThreshold(gray) {
@@ -1090,7 +1081,7 @@
       let sumB = 0;
       let wB = 0;
       let maxBetween = -1;
-      let threshold = 145;
+      let threshold = 120;
 
       for (let t = 0; t < 256; t++) {
         wB += hist[t];
@@ -1120,63 +1111,97 @@
       return threshold;
     }
 
-    function calculateAutoSizes(components, width, height) {
-      const imageArea = width * height;
+    function thresholdImage(gray, threshold) {
+      const binary = new Uint8Array(gray.length);
 
-      const usable = components
-        .filter(component => {
-          const notTinyNoise = component.area > imageArea * 0.00001;
-          const notHugeBackground = component.area < imageArea * 0.04;
-          const visibleShape = component.boxWidth >= 3 && component.boxHeight >= 3;
-
-          return notTinyNoise && notHugeBackground && visibleShape;
-        })
-        .map(component => component.area)
-        .sort((a, b) => a - b);
-
-      if (usable.length < 5) {
-        return {
-          minArea: Math.max(20, Math.round(imageArea * 0.00003)),
-          maxArea: Math.max(2500, Math.round(imageArea * 0.006))
-        };
+      for (let i = 0; i < gray.length; i++) {
+        if (gray[i] >= threshold) {
+          binary[i] = 1;
+        }
       }
 
-      const middleStart = Math.floor(usable.length * 0.2);
-      const middleEnd = Math.ceil(usable.length * 0.8);
-      const middle = usable.slice(middleStart, middleEnd);
-
-      const averageArea =
-        middle.reduce((sum, value) => sum + value, 0) / middle.length;
-
-      const minArea = Math.max(12, Math.round(averageArea * 0.22));
-      const maxArea = Math.max(200, Math.round(averageArea * 2.6));
-
-      return { minArea, maxArea };
+      return binary;
     }
 
-    function removeNoise(binary, width, height) {
+    function closeSmallGaps(binary, width, height) {
+      const dilated = dilate(binary, width, height);
+      const closed = erode(dilated, width, height);
+
+      return closed;
+    }
+
+    function dilate(binary, width, height) {
       const output = new Uint8Array(binary.length);
 
       for (let y = 1; y < height - 1; y++) {
         for (let x = 1; x < width - 1; x++) {
           const index = y * width + x;
-          let neighbors = 0;
 
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              if (binary[(y + dy) * width + (x + dx)]) {
-                neighbors++;
-              }
-            }
-          }
-
-          if (binary[index] && neighbors >= 3) {
+          if (
+            binary[index] ||
+            binary[index - 1] ||
+            binary[index + 1] ||
+            binary[index - width] ||
+            binary[index + width]
+          ) {
             output[index] = 1;
           }
         }
       }
 
       return output;
+    }
+
+    function erode(binary, width, height) {
+      const output = new Uint8Array(binary.length);
+
+      for (let y = 1; y < height - 1; y++) {
+        for (let x = 1; x < width - 1; x++) {
+          const index = y * width + x;
+
+          if (
+            binary[index] &&
+            binary[index - 1] &&
+            binary[index + 1] &&
+            binary[index - width] &&
+            binary[index + width]
+          ) {
+            output[index] = 1;
+          }
+        }
+      }
+
+      return output;
+    }
+
+    function calculateAutoSizes(components, width, height) {
+      if (calibratedAverageArea > 0) {
+        return {
+          minArea: Math.max(35, Math.round(calibratedAverageArea * 0.30)),
+          maxArea: Math.max(250, Math.round(calibratedAverageArea * 3.40))
+        };
+      }
+
+      const imageArea = width * height;
+
+      const areas = components
+        .filter(component => passesShapeFilter(component))
+        .map(component => component.area)
+        .sort((a, b) => a - b);
+
+      if (areas.length < 4) {
+        return {
+          minArea: Math.max(55, Math.round(imageArea * 0.00025)),
+          maxArea: Math.max(900, Math.round(imageArea * 0.018))
+        };
+      }
+
+      const median = areas[Math.floor(areas.length / 2)];
+
+      return {
+        minArea: Math.max(45, Math.round(median * 0.35)),
+        maxArea: Math.max(300, Math.round(median * 3.20))
+      };
     }
 
     function findComponents(binary, width, height, minArea, maxArea) {
@@ -1192,7 +1217,6 @@
           }
 
           const stack = [start];
-
           visited[start] = 1;
 
           let area = 0;
@@ -1214,141 +1238,142 @@
             if (cy < minY) minY = cy;
             if (cy > maxY) maxY = cy;
 
-            for (let dy = -1; dy <= 1; dy++) {
-              for (let dx = -1; dx <= 1; dx++) {
-                if (dx === 0 && dy === 0) {
-                  continue;
-                }
+            const left = index - 1;
+            const right = index + 1;
+            const up = index - width;
+            const down = index + width;
 
-                const nx = cx + dx;
-                const ny = cy + dy;
-
-                if (nx < 0 || nx >= width || ny < 0 || ny >= height) {
-                  continue;
-                }
-
-                const next = ny * width + nx;
-
-                if (binary[next] && !visited[next]) {
-                  visited[next] = 1;
-                  stack.push(next);
-                }
-              }
+            if (cx > 0 && binary[left] && !visited[left]) {
+              visited[left] = 1;
+              stack.push(left);
             }
+
+            if (cx < width - 1 && binary[right] && !visited[right]) {
+              visited[right] = 1;
+              stack.push(right);
+            }
+
+            if (cy > 0 && binary[up] && !visited[up]) {
+              visited[up] = 1;
+              stack.push(up);
+            }
+
+            if (cy < height - 1 && binary[down] && !visited[down]) {
+              visited[down] = 1;
+              stack.push(down);
+            }
+          }
+
+          if (area < minArea || area > maxArea) {
+            continue;
           }
 
           const boxWidth = maxX - minX + 1;
           const boxHeight = maxY - minY + 1;
+          const boxArea = boxWidth * boxHeight;
+          const aspect = Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
+          const density = area / Math.max(1, boxArea);
 
-          const aspect =
-            Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
-
-          const valid =
-            area >= minArea &&
-            area <= maxArea * 5 &&
-            boxWidth >= 3 &&
-            boxHeight >= 3 &&
-            aspect <= 16;
-
-          if (valid) {
-            components.push({
-              area,
-              minX,
-              maxX,
-              minY,
-              maxY,
-              boxWidth,
-              boxHeight,
-              aspect
-            });
-          }
+          components.push({
+            area,
+            minX,
+            maxX,
+            minY,
+            maxY,
+            boxWidth,
+            boxHeight,
+            aspect,
+            density
+          });
         }
       }
 
       return components;
     }
 
-    function estimateFinalCount(components, maxArea) {
-      const singleAreas = components
-        .filter(component => component.area <= maxArea)
-        .map(component => component.area)
-        .sort((a, b) => a - b);
-
-      let averageArea = calibratedAverageArea;
-
-      if (!averageArea && singleAreas.length >= 5) {
-        const start = Math.floor(singleAreas.length * 0.2);
-        const end = Math.ceil(singleAreas.length * 0.8);
-        const trimmed = singleAreas.slice(start, end);
-
-        averageArea =
-          trimmed.reduce((sum, value) => sum + value, 0) / Math.max(1, trimmed.length);
+    function passesShapeFilter(component) {
+      if (component.boxWidth < 5 || component.boxHeight < 5) {
+        return false;
       }
 
-      let count = 0;
-      const clusterEstimates = [];
-
-      for (const component of components) {
-        if (averageArea && component.area > maxArea) {
-          const estimated = Math.max(1, Math.round(component.area / averageArea));
-
-          count += estimated;
-          clusterEstimates.push({ component, estimated });
-        } else {
-          count += 1;
-        }
+      if (component.aspect > 18) {
+        return false;
       }
 
-      return { count, averageArea, clusterEstimates };
+      if (component.density < 0.08) {
+        return false;
+      }
+
+      if (component.density > 0.95 && component.area < 180) {
+        return false;
+      }
+
+      return true;
     }
 
-    function calculateConfidence(final, components, target) {
+    function calculateConfidence(components, target, rejected) {
       let confidence = 98;
 
       if (components.length === 0) {
         return 0;
       }
 
-      if (final.clusterEstimates.length > 0) {
-        confidence -= Math.min(35, final.clusterEstimates.length * 8);
+      if (rejected > 80) {
+        confidence -= 25;
+      } else if (rejected > 35) {
+        confidence -= 12;
       }
 
-      const highAspect = components.filter(component => component.aspect > 10).length;
-      confidence -= Math.min(20, highAspect * 3);
+      const longObjects = components.filter(component => component.aspect > 12).length;
 
-      if (Math.abs(final.count - target) > 5) {
-        confidence -= 5;
+      confidence -= Math.min(18, longObjects * 3);
+
+      if (Math.abs(components.length - target) > 10) {
+        confidence -= 6;
       }
 
       return Math.max(10, Math.min(99, Math.round(confidence)));
     }
 
-    function buildWarnings(final, components, confidence) {
+    function buildWarnings(components, rejected, confidence, threshold) {
       const warnings = [];
 
       if (components.length === 0) {
-        warnings.push("No screws detected. Check camera, lighting, mat contrast, and scan area.");
+        warnings.push("No screws detected. Use a dark matte mat and softer lighting.");
       }
 
-      if (final.clusterEstimates.length > 0) {
-        warnings.push("Some screws may be touching. The app estimated cluster counts.");
+      if (rejected > 80) {
+        warnings.push("Too many tiny bright specks were rejected. Reduce glare or change the mat.");
       }
 
       if (confidence < 80) {
-        warnings.push("Low confidence. Spread the screws more evenly and rescan.");
+        warnings.push("Low confidence. Spread screws farther apart and rescan.");
+      }
+
+      if (threshold > 200) {
+        warnings.push("Image is very bright. Reduce glare or move away from direct light.");
       }
 
       const target = Number(targetInput.value);
 
-      if (final.count < target) {
+      if (components.length < target) {
         warnings.push("Count is below target.");
       }
 
-      if (final.count > target) {
+      if (components.length > target) {
         warnings.push("Count is above target.");
       }
 
       return warnings;
+    }
+
+    function getSourceROI(width, height) {
+      const x = Math.round(width * ROI_MARGIN);
+      const y = Math.round(height * ROI_MARGIN);
+      const w = Math.round(width * (1 - ROI_MARGIN * 2));
+      const h = Math.round(height * (1 - ROI_MARGIN * 2));
+
+      return { x, y, w, h };
     }
 
     function renderResult(result) {
@@ -1386,55 +1411,59 @@
       });
     }
 
-    function drawOverlayOnly() {
-      if (!displayCanvas.width || !displayCanvas.height) {
+    function drawScanBox() {
+      const source = usingPhoto ? photoCanvas : video;
+      const rect = source.getBoundingClientRect();
+
+      if (!rect.width || !rect.height) {
         return;
       }
 
-      overlay.width = displayCanvas.width;
-      overlay.height = displayCanvas.height;
+      overlay.width = Math.round(rect.width);
+      overlay.height = Math.round(rect.height);
 
       overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 
-      const roi = getROI(displayCanvas.width, displayCanvas.height);
+      const x = overlay.width * ROI_MARGIN;
+      const y = overlay.height * ROI_MARGIN;
+      const w = overlay.width * (1 - ROI_MARGIN * 2);
+      const h = overlay.height * (1 - ROI_MARGIN * 2);
 
       overlayCtx.lineWidth = 4;
       overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.98)";
-      overlayCtx.strokeRect(roi.x, roi.y, roi.w, roi.h);
+      overlayCtx.strokeRect(x, y, w, h);
 
       overlayCtx.fillStyle = "rgba(116, 184, 67, 0.98)";
       overlayCtx.font = "22px system-ui";
-      overlayCtx.fillText("Scan Area", roi.x + 10, Math.max(28, roi.y - 10));
+      overlayCtx.fillText("Scan Area", x + 10, Math.max(28, y - 10));
     }
 
     function drawResultOverlay(result) {
-      drawOverlayOnly();
+      drawScanBox();
+
+      const source = usingPhoto ? photoCanvas : video;
+      const rect = source.getBoundingClientRect();
+
+      const scaleX = (rect.width * (1 - ROI_MARGIN * 2)) / result.workWidth;
+      const scaleY = (rect.height * (1 - ROI_MARGIN * 2)) / result.workHeight;
+      const offsetX = rect.width * ROI_MARGIN;
+      const offsetY = rect.height * ROI_MARGIN;
 
       overlayCtx.lineWidth = 2;
       overlayCtx.font = "15px system-ui";
       overlayCtx.textBaseline = "top";
+      overlayCtx.strokeStyle = "#74b843";
+      overlayCtx.fillStyle = "#74b843";
 
-      let number = 1;
+      result.components.forEach((component, index) => {
+        const x = offsetX + component.minX * scaleX;
+        const y = offsetY + component.minY * scaleY;
+        const w = component.boxWidth * scaleX;
+        const h = component.boxHeight * scaleY;
 
-      for (const component of result.components) {
-        const cluster = result.clusterEstimates.find(
-          item => item.component === component
-        );
-
-        const x = result.roi.x + component.minX;
-        const y = result.roi.y + component.minY;
-
-        overlayCtx.strokeStyle = cluster ? "#a66a00" : "#74b843";
-        overlayCtx.fillStyle = cluster ? "#a66a00" : "#74b843";
-
-        overlayCtx.strokeRect(x, y, component.boxWidth, component.boxHeight);
-
-        const label = cluster ? "+" + cluster.estimated : String(number);
-
-        overlayCtx.fillText(label, x, Math.max(0, y - 18));
-
-        number++;
-      }
+        overlayCtx.strokeRect(x, y, w, h);
+        overlayCtx.fillText(String(index + 1), x, Math.max(0, y - 18));
+      });
     }
 
     function calibrateSize() {
@@ -1444,29 +1473,20 @@
         return;
       }
 
-      const maxArea = Number(maxAreaInput.value);
-
       const areas = latestResult.components
-        .filter(component => component.area <= maxArea)
         .map(component => component.area)
         .sort((a, b) => a - b);
 
-      if (areas.length < 5) {
-        statusBox.textContent = "Not enough single screws found for calibration";
-        statusBox.className = "status warnText";
-        return;
-      }
-
-      const start = Math.floor(areas.length * 0.2);
-      const end = Math.ceil(areas.length * 0.8);
-      const trimmed = areas.slice(start, end);
+      const middleStart = Math.floor(areas.length * 0.2);
+      const middleEnd = Math.ceil(areas.length * 0.8);
+      const middle = areas.slice(middleStart, middleEnd);
 
       calibratedAverageArea =
-        trimmed.reduce((sum, value) => sum + value, 0) / trimmed.length;
+        middle.reduce((sum, value) => sum + value, 0) / middle.length;
 
       localStorage.setItem("averageScrewArea", String(calibratedAverageArea));
 
-      statusBox.textContent = "Auto calibration saved";
+      statusBox.textContent = "Calibration saved";
       statusBox.className = "status passText";
     }
 
@@ -1570,11 +1590,7 @@
     function saveSettings() {
       const settings = {
         target: targetInput.value,
-        packageId: packageIdInput.value,
-        leftMargin: leftMarginInput.value,
-        rightMargin: rightMarginInput.value,
-        topMargin: topMarginInput.value,
-        bottomMargin: bottomMarginInput.value
+        packageId: packageIdInput.value
       };
 
       localStorage.setItem("screwCounterSettings", JSON.stringify(settings));
@@ -1586,10 +1602,6 @@
 
         if (settings.target) targetInput.value = settings.target;
         if (settings.packageId) packageIdInput.value = settings.packageId;
-        if (settings.leftMargin) leftMarginInput.value = settings.leftMargin;
-        if (settings.rightMargin) rightMarginInput.value = settings.rightMargin;
-        if (settings.topMargin) topMarginInput.value = settings.topMargin;
-        if (settings.bottomMargin) bottomMarginInput.value = settings.bottomMargin;
       } catch {}
     }
 
@@ -1598,23 +1610,24 @@
       targetStat.textContent = targetInput.value;
     }
 
-    function initializeCanvas() {
-      displayCanvas.width = 1280;
-      displayCanvas.height = 720;
-      overlay.width = 1280;
-      overlay.height = 720;
+    function initializePreview() {
+      photoCanvas.width = 1280;
+      photoCanvas.height = 720;
+      photoCanvas.style.display = "block";
+      video.style.display = "none";
 
-      displayCtx.fillStyle = "#231f20";
-      displayCtx.fillRect(0, 0, displayCanvas.width, displayCanvas.height);
+      photoCtx.fillStyle = "#231f20";
+      photoCtx.fillRect(0, 0, photoCanvas.width, photoCanvas.height);
 
-      displayCtx.fillStyle = "#e6e7e8";
-      displayCtx.font = "42px system-ui";
-      displayCtx.fillText("LUX FASTENER VISION", 40, 86);
+      photoCtx.fillStyle = "#e6e7e8";
+      photoCtx.font = "42px system-ui";
+      photoCtx.fillText("LUX FASTENER VISION", 40, 86);
 
-      displayCtx.font = "22px system-ui";
-      displayCtx.fillText("Start the camera or load a test photo", 44, 126);
+      photoCtx.font = "22px system-ui";
+      photoCtx.fillText("Start the camera or load a test photo", 44, 126);
 
-      drawOverlayOnly();
+      usingPhoto = true;
+      drawScanBox();
     }
   </script>
 </body>

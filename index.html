@@ -4,18 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="LUX Counter" />
-  <title>LUX Fastener Counter</title>
+  <meta name="apple-mobile-web-app-title" content="LUX Dataset" />
+  <title>LUX Screw Dataset Collector</title>
 
   <style>
     :root {
       --lux-black: #231f20;
-      --lux-dark: #111111;
-      --lux-gray: #e6e7e8;
-      --lux-gray-2: #cfd3d5;
-      --lux-white: #ffffff;
       --lux-green: #74b843;
       --lux-green-dark: #4f8f2f;
+      --lux-gray: #e6e7e8;
+      --lux-white: #ffffff;
       --lux-red: #b00020;
       --lux-yellow: #a66a00;
 
@@ -30,26 +28,24 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
       background: var(--lux-gray);
     }
 
     .app {
-      width: 100%;
-      max-width: 1180px;
+      max-width: 1150px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 14px;
     }
 
     .header {
       background: var(--lux-black);
-      color: var(--lux-white);
-      padding: 18px 22px;
+      color: white;
+      padding: 18px 20px;
       border-left: 12px solid var(--lux-green);
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
+      display: flex;
       align-items: center;
+      justify-content: space-between;
+      gap: 16px;
     }
 
     .brand {
@@ -59,110 +55,77 @@
       margin-bottom: 8px;
     }
 
-    .brand .lux {
+    .lux {
       font-size: 38px;
       font-weight: 900;
       letter-spacing: -2px;
     }
 
-    .brand .dynamics {
+    .dynamics {
       font-size: 18px;
       color: #d8d8d8;
       font-weight: 600;
     }
 
-    .brandMark {
-      width: 34px;
-      height: 22px;
-      position: relative;
-      display: inline-block;
-      transform: translateY(4px);
-    }
-
-    .brandMark::before,
-    .brandMark::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      width: 0;
-      height: 0;
-      border-top: 11px solid transparent;
-      border-bottom: 11px solid transparent;
-      border-left: 21px solid var(--lux-green);
-    }
-
-    .brandMark::before {
-      left: 0;
-    }
-
-    .brandMark::after {
-      left: 13px;
-      opacity: 0.6;
-    }
-
     h1 {
       margin: 0;
-      font-size: clamp(34px, 5vw, 60px);
+      font-size: clamp(32px, 5vw, 58px);
       line-height: 0.95;
       font-weight: 900;
       letter-spacing: -3px;
       text-transform: uppercase;
     }
 
-    .headerStatus {
+    .photoCountBox {
       text-align: right;
-      min-width: 170px;
+      min-width: 150px;
     }
 
-    .headerStatus span {
+    .photoCountBox span {
       display: block;
       font-size: 12px;
-      color: #c8c8c8;
+      color: #cfcfcf;
       text-transform: uppercase;
       letter-spacing: 1.5px;
       font-weight: 800;
     }
 
-    .headerStatus strong {
+    .photoCountBox strong {
       display: block;
-      font-size: 32px;
+      font-size: 36px;
       color: var(--lux-green);
       font-weight: 900;
       line-height: 1;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .main {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 16px;
-      margin-top: 16px;
+      gap: 14px;
+      margin-top: 14px;
     }
 
     @media (min-width: 900px) {
       .main {
-        grid-template-columns: 1.55fr 0.75fr;
+        grid-template-columns: 1.45fr 0.8fr;
       }
     }
 
     .cameraPanel {
       position: relative;
-      background: var(--lux-dark);
+      background: #111;
       border: 8px solid var(--lux-black);
-      min-height: 520px;
       overflow: hidden;
     }
 
     video {
       width: 100%;
-      height: 100%;
-      min-height: 520px;
       display: block;
-      object-fit: cover;
-      background: var(--lux-dark);
+      background: #111;
     }
 
-    canvas#overlay {
+    #overlay {
       position: absolute;
       inset: 0;
       width: 100%;
@@ -170,48 +133,11 @@
       pointer-events: none;
     }
 
-    .resultHUD {
-      position: absolute;
-      left: 18px;
-      top: 18px;
-      background: rgba(255, 255, 255, 0.94);
-      border-left: 10px solid var(--lux-yellow);
-      padding: 16px;
-      min-width: 230px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-      z-index: 4;
-    }
-
-    .resultHUD.pass {
-      border-left-color: var(--lux-green);
-    }
-
-    .resultHUD.fail {
-      border-left-color: var(--lux-red);
-    }
-
-    .count {
-      font-size: 64px;
-      line-height: 0.9;
-      font-weight: 900;
-      letter-spacing: -4px;
-      color: var(--lux-black);
-    }
-
-    .hudLine {
-      margin-top: 8px;
-      font-size: 15px;
-      text-transform: uppercase;
-      font-weight: 900;
-      letter-spacing: 1px;
-      color: #444;
-    }
-
     .controls {
-      background: var(--lux-white);
-      border-top: 8px solid var(--lux-green);
+      background: white;
       padding: 18px;
-      box-shadow: 0 8px 24px rgba(35, 31, 32, 0.12);
+      border-top: 8px solid var(--lux-green);
+      box-shadow: 0 8px 22px rgba(35, 31, 32, 0.14);
     }
 
     .sectionTitle {
@@ -220,7 +146,6 @@
       text-transform: uppercase;
       letter-spacing: 2px;
       font-weight: 900;
-      color: var(--lux-black);
     }
 
     label {
@@ -238,7 +163,7 @@
       padding: 14px 12px;
       font-size: 22px;
       font-weight: 800;
-      border: 2px solid var(--lux-gray-2);
+      border: 2px solid #cfd3d5;
       border-radius: 0;
       outline: none;
       margin-bottom: 14px;
@@ -257,7 +182,7 @@
       margin-top: 10px;
       color: white;
       background: var(--lux-black);
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.5px;
@@ -267,10 +192,14 @@
       background: var(--lux-green-dark);
     }
 
+    button.secondary {
+      background: #4a4d4f;
+    }
+
     .status {
       margin-top: 16px;
       padding: 16px;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
       text-align: center;
       text-transform: uppercase;
@@ -278,13 +207,13 @@
       border-left: 10px solid var(--lux-yellow);
     }
 
-    .status.pass {
+    .status.good {
       background: #e7f3df;
       color: #255b16;
       border-left-color: var(--lux-green);
     }
 
-    .status.fail {
+    .status.bad {
       background: #ffe1e5;
       color: var(--lux-red);
       border-left-color: var(--lux-red);
@@ -300,41 +229,61 @@
       color: #333;
     }
 
-    .warnings {
-      margin: 12px 0 0;
-      padding-left: 20px;
-      color: #6b4a00;
-      font-size: 15px;
-      line-height: 1.4;
+    .previewPanel {
+      margin-top: 14px;
+      background: white;
+      padding: 14px;
+      border-left: 8px solid var(--lux-green);
+      display: none;
     }
 
-    .hidden {
+    .previewPanel img {
+      width: 100%;
+      display: block;
+      border: 4px solid var(--lux-black);
+      margin-top: 10px;
+    }
+
+    .log {
+      margin-top: 14px;
+      background: white;
+      padding: 14px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      padding: 8px 6px;
+      white-space: nowrap;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: #f0f1f1;
+    }
+
+    canvas {
       display: none;
     }
 
     @media (max-width: 700px) {
-      .app {
-        padding: 10px;
-      }
-
       .header {
-        grid-template-columns: 1fr;
+        display: block;
       }
 
-      .headerStatus {
+      .photoCountBox {
         text-align: left;
-      }
-
-      .cameraPanel {
-        min-height: 420px;
-      }
-
-      video {
-        min-height: 420px;
-      }
-
-      .count {
-        font-size: 52px;
+        margin-top: 14px;
       }
     }
   </style>
@@ -347,14 +296,13 @@
         <div class="brand">
           <span class="lux">LUX</span>
           <span class="dynamics">dynamics</span>
-          <span class="brandMark"></span>
         </div>
-        <h1>Fastener Counter</h1>
+        <h1>Screw Dataset Collector</h1>
       </div>
 
-      <div class="headerStatus">
-        <span>Target</span>
-        <strong id="targetHeader">100</strong>
+      <div class="photoCountBox">
+        <span>Photos Saved</span>
+        <strong id="savedCount">0</strong>
       </div>
     </header>
 
@@ -362,37 +310,50 @@
       <div class="cameraPanel">
         <video id="video" autoplay playsinline muted></video>
         <canvas id="overlay"></canvas>
-
-        <div id="hud" class="resultHUD">
-          <div class="count" id="countReadout">0</div>
-          <div class="hudLine">Target: <span id="targetReadout">100</span></div>
-          <div class="hudLine">Difference: <span id="differenceReadout">0</span></div>
-          <div class="hudLine">Confidence: <span id="confidenceReadout">0%</span></div>
-        </div>
       </div>
 
       <aside class="controls">
-        <p class="sectionTitle">Pack Verification</p>
+        <p class="sectionTitle">Training Photo Setup</p>
 
-        <label for="targetInput">Target Count</label>
-        <input id="targetInput" type="number" value="100" min="1" max="500" />
+        <label for="trueCount">True Screw Count</label>
+        <input id="trueCount" type="number" value="28" min="1" max="500" />
 
-        <label for="packageInput">Package ID</label>
-        <input id="packageInput" type="text" placeholder="Optional" />
+        <label for="packageId">Photo Set Name</label>
+        <input id="packageId" type="text" value="lux_screws" />
 
-        <button id="startButton">Start Camera</button>
-        <button id="scanButton" class="primary">Scan Screws</button>
+        <button id="startCamera">Start Camera</button>
+        <button id="capturePhoto" class="primary">Capture Training Photo</button>
+        <button id="downloadCsv" class="secondary">Download CSV Log</button>
+        <button id="clearLog" class="secondary">Clear Log</button>
 
         <div id="status" class="status">Ready</div>
-        <ul id="warnings" class="warnings"></ul>
 
         <div class="note">
-          Use a matte black mat. Spread screws apart. This version rejects tiny glare spots and does not estimate touching screws.
+          Take photos from the same iPad angle you want to use later. Change screw positions often. Include counts like 10, 25, 28, 50, 75, 99, 100, and 101.
         </div>
       </aside>
     </section>
 
-    <canvas id="workCanvas" class="hidden"></canvas>
+    <section id="previewPanel" class="previewPanel">
+      <strong>Last Captured Photo</strong>
+      <img id="previewImage" alt="Last captured screw training photo" />
+    </section>
+
+    <section class="log">
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Filename</th>
+            <th>True Count</th>
+            <th>Set</th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </section>
+
+    <canvas id="captureCanvas"></canvas>
   </main>
 
   <script>
@@ -400,43 +361,38 @@
     const overlay = document.getElementById("overlay");
     const overlayCtx = overlay.getContext("2d");
 
-    const workCanvas = document.getElementById("workCanvas");
-    const workCtx = workCanvas.getContext("2d", { willReadFrequently: true });
+    const captureCanvas = document.getElementById("captureCanvas");
+    const captureCtx = captureCanvas.getContext("2d");
 
-    const targetInput = document.getElementById("targetInput");
-    const packageInput = document.getElementById("packageInput");
+    const trueCountInput = document.getElementById("trueCount");
+    const packageIdInput = document.getElementById("packageId");
 
-    const targetHeader = document.getElementById("targetHeader");
-    const targetReadout = document.getElementById("targetReadout");
-    const countReadout = document.getElementById("countReadout");
-    const differenceReadout = document.getElementById("differenceReadout");
-    const confidenceReadout = document.getElementById("confidenceReadout");
-
-    const hud = document.getElementById("hud");
     const statusBox = document.getElementById("status");
-    const warningsBox = document.getElementById("warnings");
+    const savedCount = document.getElementById("savedCount");
+    const logBody = document.getElementById("logBody");
 
-    const ROI_MARGIN = 0.06;
-    const WORK_WIDTH = 640;
+    const previewPanel = document.getElementById("previewPanel");
+    const previewImage = document.getElementById("previewImage");
 
-    let lastResult = null;
+    let log = [];
 
-    targetInput.addEventListener("input", updateTargetLabels);
-    document.getElementById("startButton").addEventListener("click", startCamera);
-    document.getElementById("scanButton").addEventListener("click", scan);
+    loadLog();
+    updateLogTable();
 
-    window.addEventListener("resize", drawEmptyOverlay);
+    document.getElementById("startCamera").addEventListener("click", startCamera);
+    document.getElementById("capturePhoto").addEventListener("click", capturePhoto);
+    document.getElementById("downloadCsv").addEventListener("click", downloadCsv);
+    document.getElementById("clearLog").addEventListener("click", clearLog);
 
-    updateTargetLabels();
-    drawStartupOverlay();
+    window.addEventListener("resize", drawOverlay);
 
     async function startCamera() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             facingMode: { ideal: "environment" },
-            width: { ideal: 1280 },
-            height: { ideal: 720 }
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
           },
           audio: false
         });
@@ -450,509 +406,123 @@
         await video.play();
 
         statusBox.textContent = "Camera Ready";
-        statusBox.className = "status";
-        drawEmptyOverlay();
+        statusBox.className = "status good";
+
+        drawOverlay();
       } catch (error) {
         statusBox.textContent = "Camera Blocked";
-        statusBox.className = "status fail";
-        warningsBox.innerHTML = "<li>Open this page through HTTPS and allow camera access.</li>";
+        statusBox.className = "status bad";
         console.error(error);
       }
     }
 
-    function scan() {
+    function capturePhoto() {
       if (!video.videoWidth || !video.videoHeight) {
         statusBox.textContent = "Start Camera First";
-        statusBox.className = "status fail";
+        statusBox.className = "status bad";
         return;
       }
 
-      const result = analyzeVideoFrame();
-      lastResult = result;
+      const trueCount = Number(trueCountInput.value);
 
-      updateResult(result);
-      drawResultOverlay(result);
-    }
-
-    function analyzeVideoFrame() {
-      const sourceWidth = video.videoWidth;
-      const sourceHeight = video.videoHeight;
-
-      const roi = {
-        x: Math.round(sourceWidth * ROI_MARGIN),
-        y: Math.round(sourceHeight * ROI_MARGIN),
-        w: Math.round(sourceWidth * (1 - ROI_MARGIN * 2)),
-        h: Math.round(sourceHeight * (1 - ROI_MARGIN * 2))
-      };
-
-      const scale = WORK_WIDTH / roi.w;
-      const workWidth = WORK_WIDTH;
-      const workHeight = Math.round(roi.h * scale);
-
-      workCanvas.width = workWidth;
-      workCanvas.height = workHeight;
-
-      workCtx.drawImage(
-        video,
-        roi.x,
-        roi.y,
-        roi.w,
-        roi.h,
-        0,
-        0,
-        workWidth,
-        workHeight
-      );
-
-      const image = workCtx.getImageData(0, 0, workWidth, workHeight);
-      const gray = toGrayscale(image.data, workWidth, workHeight);
-      const smooth = blur3x3(gray, workWidth, workHeight);
-
-      const threshold = calculateThreshold(smooth);
-      const binary = createBinaryMask(smooth, threshold);
-      const cleaned = cleanMask(binary, workWidth, workHeight);
-
-      const componentsRaw = findComponents(cleaned, workWidth, workHeight);
-
-      const sizeModel = estimateScrewSize(componentsRaw, workWidth, workHeight);
-
-      const components = componentsRaw
-        .filter(component => isScrewLike(component, sizeModel))
-        .sort((a, b) => a.minY - b.minY || a.minX - b.minX);
-
-      const target = Number(targetInput.value);
-      const count = components.length;
-      const difference = count - target;
-      const rejected = componentsRaw.length - components.length;
-      const confidence = estimateConfidence(count, target, rejected, components);
-
-      const warnings = [];
-
-      if (components.length === 0) {
-        warnings.push("No screws detected. Use a dark matte mat and softer lighting.");
+      if (!trueCount || trueCount < 1) {
+        statusBox.textContent = "Enter True Count";
+        statusBox.className = "status bad";
+        return;
       }
 
-      if (rejected > 40) {
-        warnings.push("Many tiny bright spots were rejected. Reduce glare.");
-      }
+      const setName = cleanFileName(packageIdInput.value || "lux_screws");
+      const timestamp = makeTimestamp();
+      const filename = `${setName}_count-${trueCount}_${timestamp}.jpg`;
 
-      if (confidence < 80) {
-        warnings.push("Low confidence. Spread screws apart and rescan.");
-      }
+      captureCanvas.width = video.videoWidth;
+      captureCanvas.height = video.videoHeight;
 
-      if (difference < 0) {
-        warnings.push("Count is below target.");
-      }
+      captureCtx.drawImage(video, 0, 0, captureCanvas.width, captureCanvas.height);
 
-      if (difference > 0) {
-        warnings.push("Count is above target.");
-      }
-
-      return {
-        roi,
-        workWidth,
-        workHeight,
-        components,
-        rejected,
-        target,
-        count,
-        difference,
-        confidence,
-        threshold,
-        warnings
-      };
-    }
-
-    function toGrayscale(pixels, width, height) {
-      const gray = new Uint8Array(width * height);
-
-      for (let i = 0, p = 0; i < pixels.length; i += 4, p++) {
-        const r = pixels[i];
-        const g = pixels[i + 1];
-        const b = pixels[i + 2];
-
-        gray[p] = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
-      }
-
-      return gray;
-    }
-
-    function blur3x3(gray, width, height) {
-      const output = new Uint8Array(gray.length);
-
-      for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-          let sum = 0;
-
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              sum += gray[(y + dy) * width + (x + dx)];
-            }
-          }
-
-          output[y * width + x] = Math.round(sum / 9);
-        }
-      }
-
-      return output;
-    }
-
-    function calculateThreshold(gray) {
-      const hist = new Array(256).fill(0);
-
-      for (let i = 0; i < gray.length; i += 2) {
-        hist[gray[i]]++;
-      }
-
-      let total = 0;
-      let sum = 0;
-
-      for (let i = 0; i < 256; i++) {
-        total += hist[i];
-        sum += i * hist[i];
-      }
-
-      let sumB = 0;
-      let wB = 0;
-      let maxVariance = -1;
-      let otsu = 125;
-
-      for (let t = 0; t < 256; t++) {
-        wB += hist[t];
-
-        if (wB === 0) {
-          continue;
+      captureCanvas.toBlob(blob => {
+        if (!blob) {
+          statusBox.textContent = "Capture Failed";
+          statusBox.className = "status bad";
+          return;
         }
 
-        const wF = total - wB;
+        const url = URL.createObjectURL(blob);
 
-        if (wF === 0) {
-          break;
-        }
+        const downloadLink = document.createElement("a");
+        downloadLink.href = url;
+        downloadLink.download = filename;
+        downloadLink.click();
 
-        sumB += t * hist[t];
+        previewImage.src = url;
+        previewPanel.style.display = "block";
 
-        const mB = sumB / wB;
-        const mF = (sum - sumB) / wF;
-        const variance = wB * wF * (mB - mF) * (mB - mF);
-
-        if (variance > maxVariance) {
-          maxVariance = variance;
-          otsu = t;
-        }
-      }
-
-      let mean = 0;
-
-      for (let i = 0; i < gray.length; i += 3) {
-        mean += gray[i];
-      }
-
-      mean = mean / Math.ceil(gray.length / 3);
-
-      let variance = 0;
-
-      for (let i = 0; i < gray.length; i += 3) {
-        const d = gray[i] - mean;
-        variance += d * d;
-      }
-
-      const std = Math.sqrt(variance / Math.ceil(gray.length / 3));
-      const adaptive = mean + std * 0.65;
-
-      return Math.max(75, Math.min(210, Math.round(Math.max(otsu, adaptive))));
-    }
-
-    function createBinaryMask(gray, threshold) {
-      const binary = new Uint8Array(gray.length);
-
-      for (let i = 0; i < gray.length; i++) {
-        if (gray[i] >= threshold) {
-          binary[i] = 1;
-        }
-      }
-
-      return binary;
-    }
-
-    function cleanMask(binary, width, height) {
-      let output = removeLonelyPixels(binary, width, height);
-      output = dilate(output, width, height);
-      output = erode(output, width, height);
-      output = removeLonelyPixels(output, width, height);
-
-      return output;
-    }
-
-    function removeLonelyPixels(binary, width, height) {
-      const output = new Uint8Array(binary.length);
-
-      for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-          const index = y * width + x;
-
-          if (!binary[index]) {
-            continue;
-          }
-
-          let neighbors = 0;
-
-          for (let dy = -1; dy <= 1; dy++) {
-            for (let dx = -1; dx <= 1; dx++) {
-              if (binary[(y + dy) * width + (x + dx)]) {
-                neighbors++;
-              }
-            }
-          }
-
-          if (neighbors >= 4) {
-            output[index] = 1;
-          }
-        }
-      }
-
-      return output;
-    }
-
-    function dilate(binary, width, height) {
-      const output = new Uint8Array(binary.length);
-
-      for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-          const index = y * width + x;
-
-          if (
-            binary[index] ||
-            binary[index - 1] ||
-            binary[index + 1] ||
-            binary[index - width] ||
-            binary[index + width]
-          ) {
-            output[index] = 1;
-          }
-        }
-      }
-
-      return output;
-    }
-
-    function erode(binary, width, height) {
-      const output = new Uint8Array(binary.length);
-
-      for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-          const index = y * width + x;
-
-          if (
-            binary[index] &&
-            binary[index - 1] &&
-            binary[index + 1] &&
-            binary[index - width] &&
-            binary[index + width]
-          ) {
-            output[index] = 1;
-          }
-        }
-      }
-
-      return output;
-    }
-
-    function findComponents(binary, width, height) {
-      const visited = new Uint8Array(width * height);
-      const components = [];
-
-      for (let y = 0; y < height; y++) {
-        for (let x = 0; x < width; x++) {
-          const start = y * width + x;
-
-          if (!binary[start] || visited[start]) {
-            continue;
-          }
-
-          const stack = [start];
-          visited[start] = 1;
-
-          let area = 0;
-          let minX = x;
-          let maxX = x;
-          let minY = y;
-          let maxY = y;
-
-          while (stack.length) {
-            const index = stack.pop();
-            area++;
-
-            const cx = index % width;
-            const cy = Math.floor(index / width);
-
-            if (cx < minX) minX = cx;
-            if (cx > maxX) maxX = cx;
-            if (cy < minY) minY = cy;
-            if (cy > maxY) maxY = cy;
-
-            const neighbors = [
-              index - 1,
-              index + 1,
-              index - width,
-              index + width
-            ];
-
-            for (const next of neighbors) {
-              if (next < 0 || next >= binary.length) {
-                continue;
-              }
-
-              if (binary[next] && !visited[next]) {
-                visited[next] = 1;
-                stack.push(next);
-              }
-            }
-          }
-
-          const boxWidth = maxX - minX + 1;
-          const boxHeight = maxY - minY + 1;
-          const boxArea = boxWidth * boxHeight;
-          const aspect = Math.max(boxWidth, boxHeight) / Math.max(1, Math.min(boxWidth, boxHeight));
-          const density = area / Math.max(1, boxArea);
-
-          components.push({
-            area,
-            minX,
-            maxX,
-            minY,
-            maxY,
-            boxWidth,
-            boxHeight,
-            aspect,
-            density
-          });
-        }
-      }
-
-      return components;
-    }
-
-    function estimateScrewSize(components, width, height) {
-      const imageArea = width * height;
-
-      const possible = components
-        .filter(c => {
-          return (
-            c.area > imageArea * 0.00025 &&
-            c.area < imageArea * 0.025 &&
-            c.boxWidth >= 6 &&
-            c.boxHeight >= 6 &&
-            c.aspect <= 14 &&
-            c.density >= 0.08 &&
-            c.density <= 0.85
-          );
-        })
-        .map(c => c.area)
-        .sort((a, b) => a - b);
-
-      if (possible.length < 3) {
-        return {
-          minArea: Math.max(90, Math.round(imageArea * 0.00045)),
-          maxArea: Math.max(1200, Math.round(imageArea * 0.015))
+        const row = {
+          time: new Date().toLocaleString(),
+          filename,
+          trueCount,
+          setName
         };
-      }
 
-      const median = possible[Math.floor(possible.length / 2)];
+        log.unshift(row);
+        saveLog();
+        updateLogTable();
 
-      return {
-        minArea: Math.max(80, Math.round(median * 0.35)),
-        maxArea: Math.max(500, Math.round(median * 3.0))
-      };
+        statusBox.textContent = "Photo Saved";
+        statusBox.className = "status good";
+      }, "image/jpeg", 0.92);
     }
 
-    function isScrewLike(component, sizeModel) {
-      if (component.area < sizeModel.minArea) {
-        return false;
+    function downloadCsv() {
+      if (!log.length) {
+        statusBox.textContent = "No Log Yet";
+        statusBox.className = "status bad";
+        return;
       }
 
-      if (component.area > sizeModel.maxArea) {
-        return false;
+      const lines = [
+        "time,filename,true_count,set_name"
+      ];
+
+      for (const row of log) {
+        lines.push([
+          csv(row.time),
+          csv(row.filename),
+          row.trueCount,
+          csv(row.setName)
+        ].join(","));
       }
 
-      if (component.boxWidth < 6 || component.boxHeight < 6) {
-        return false;
-      }
+      const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
 
-      if (component.aspect > 14) {
-        return false;
-      }
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "lux_screw_dataset_log.csv";
+      link.click();
 
-      if (component.density < 0.08) {
-        return false;
-      }
+      URL.revokeObjectURL(url);
 
-      if (component.density > 0.9 && component.area < sizeModel.minArea * 1.6) {
-        return false;
-      }
-
-      return true;
+      statusBox.textContent = "CSV Downloaded";
+      statusBox.className = "status good";
     }
 
-    function estimateConfidence(count, target, rejected, components) {
-      let confidence = 96;
+    function clearLog() {
+      const confirmClear = confirm("Clear the saved photo log on this iPad? This does not delete downloaded images.");
 
-      if (count === 0) {
-        return 0;
+      if (!confirmClear) {
+        return;
       }
 
-      if (rejected > 60) {
-        confidence -= 24;
-      } else if (rejected > 30) {
-        confidence -= 12;
-      }
+      log = [];
+      saveLog();
+      updateLogTable();
 
-      const veryLong = components.filter(c => c.aspect > 10).length;
-
-      confidence -= veryLong * 3;
-
-      if (Math.abs(count - target) > 10) {
-        confidence -= 8;
-      }
-
-      return Math.max(10, Math.min(99, Math.round(confidence)));
+      statusBox.textContent = "Log Cleared";
+      statusBox.className = "status";
     }
 
-    function updateResult(result) {
-      countReadout.textContent = result.count;
-      targetReadout.textContent = result.target;
-      targetHeader.textContent = result.target;
-      differenceReadout.textContent = result.difference;
-      confidenceReadout.textContent = result.confidence + "%";
-
-      if (result.difference === 0 && result.confidence >= 80) {
-        statusBox.textContent = "Pass";
-        statusBox.className = "status pass";
-        hud.className = "resultHUD pass";
-      } else if (result.difference < 0) {
-        statusBox.textContent = "Missing " + Math.abs(result.difference);
-        statusBox.className = "status fail";
-        hud.className = "resultHUD fail";
-      } else {
-        statusBox.textContent = "Remove " + result.difference;
-        statusBox.className = "status fail";
-        hud.className = "resultHUD fail";
-      }
-
-      warningsBox.innerHTML = "";
-
-      for (const warning of result.warnings) {
-        const li = document.createElement("li");
-        li.textContent = warning;
-        warningsBox.appendChild(li);
-      }
-    }
-
-    function drawStartupOverlay() {
-      setTimeout(drawEmptyOverlay, 50);
-    }
-
-    function drawEmptyOverlay() {
+    function drawOverlay() {
       const rect = video.getBoundingClientRect();
 
       if (!rect.width || !rect.height) {
@@ -964,52 +534,88 @@
 
       overlayCtx.clearRect(0, 0, overlay.width, overlay.height);
 
-      const x = overlay.width * ROI_MARGIN;
-      const y = overlay.height * ROI_MARGIN;
-      const w = overlay.width * (1 - ROI_MARGIN * 2);
-      const h = overlay.height * (1 - ROI_MARGIN * 2);
+      const marginX = overlay.width * 0.07;
+      const marginY = overlay.height * 0.07;
+
+      const x = marginX;
+      const y = marginY;
+      const w = overlay.width - marginX * 2;
+      const h = overlay.height - marginY * 2;
 
       overlayCtx.lineWidth = 5;
-      overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.95)";
+      overlayCtx.strokeStyle = "rgba(116, 184, 67, 0.96)";
       overlayCtx.strokeRect(x, y, w, h);
 
-      overlayCtx.fillStyle = "rgba(116, 184, 67, 0.95)";
+      overlayCtx.fillStyle = "rgba(116, 184, 67, 0.96)";
       overlayCtx.font = "22px Arial";
-      overlayCtx.fillText("Scan Area", x + 12, Math.max(30, y - 12));
+      overlayCtx.fillText("Keep screws inside this area", x + 12, Math.max(30, y - 12));
     }
 
-    function drawResultOverlay(result) {
-      drawEmptyOverlay();
+    function updateLogTable() {
+      savedCount.textContent = String(log.length);
+      logBody.innerHTML = "";
 
-      const rect = video.getBoundingClientRect();
+      for (const row of log.slice(0, 40)) {
+        const tr = document.createElement("tr");
 
-      const displayRoiX = rect.width * ROI_MARGIN;
-      const displayRoiY = rect.height * ROI_MARGIN;
-      const displayRoiW = rect.width * (1 - ROI_MARGIN * 2);
-      const displayRoiH = rect.height * (1 - ROI_MARGIN * 2);
+        const values = [
+          row.time,
+          row.filename,
+          row.trueCount,
+          row.setName
+        ];
 
-      const scaleX = displayRoiW / WORK_WIDTH;
-      const scaleY = displayRoiH / result.workHeight;
+        for (const value of values) {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        }
 
-      overlayCtx.lineWidth = 2;
-      overlayCtx.strokeStyle = "#74b843";
-      overlayCtx.fillStyle = "#74b843";
-      overlayCtx.font = "14px Arial";
-
-      result.components.forEach((c, index) => {
-        const x = displayRoiX + c.minX * scaleX;
-        const y = displayRoiY + c.minY * scaleY;
-        const w = c.boxWidth * scaleX;
-        const h = c.boxHeight * scaleY;
-
-        overlayCtx.strokeRect(x, y, w, h);
-        overlayCtx.fillText(String(index + 1), x, Math.max(0, y - 16));
-      });
+        logBody.appendChild(tr);
+      }
     }
 
-    function updateTargetLabels() {
-      targetReadout.textContent = targetInput.value;
-      targetHeader.textContent = targetInput.value;
+    function saveLog() {
+      localStorage.setItem("luxScrewDatasetLog", JSON.stringify(log));
+    }
+
+    function loadLog() {
+      try {
+        log = JSON.parse(localStorage.getItem("luxScrewDatasetLog") || "[]");
+      } catch {
+        log = [];
+      }
+    }
+
+    function makeTimestamp() {
+      const now = new Date();
+
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const h = String(now.getHours()).padStart(2, "0");
+      const min = String(now.getMinutes()).padStart(2, "0");
+      const s = String(now.getSeconds()).padStart(2, "0");
+
+      return `${y}${m}${d}_${h}${min}${s}`;
+    }
+
+    function cleanFileName(text) {
+      return text
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "") || "lux_screws";
+    }
+
+    function csv(value) {
+      const text = String(value);
+
+      if (text.includes(",") || text.includes('"') || text.includes("\n")) {
+        return '"' + text.replaceAll('"', '""') + '"';
+      }
+
+      return text;
     }
   </script>
 </body>
